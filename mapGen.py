@@ -1,5 +1,6 @@
 import random as rnd
 
+#generovanie pseudo udajov pre test #d grafu
 with open("test.txt", "w") as f:
     for i in range(500):
         if i == 0:
