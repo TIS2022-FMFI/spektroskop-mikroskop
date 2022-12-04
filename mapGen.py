@@ -1,16 +1,10 @@
 import random as rnd
 
 with open("test.txt", "w") as sxbao:
-    for i in range(500):
-        if i == 0:
-            line = str(i)
-            continue
-        line += ',' + str(i)
-    sxbao.write(line+'\n')
-    for j in range(500):
-        for k in range(500):
+    for j in range(50):
+        for k in range(50):
             if k == 0:
-                line = str(rnd.randrange(0, 200))
+                line = str(rnd.randrange(0, 14))
                 continue
-            line += ',' + str(rnd.randrange(0, 200))
+            line += ' ' + str(rnd.randrange(0, 14))
         sxbao.write(line+'\n')
