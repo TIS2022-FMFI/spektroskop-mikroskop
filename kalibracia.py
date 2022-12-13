@@ -1,6 +1,6 @@
 from matplotlib.widgets import Button
 import matplotlib.pyplot as plt
-from easygui import fileopenbox
+from tkinter.filedialog import askopenfilename
 
 fig = plt.figure("Kalibracia spektrometra", figsize=(10, 6), facecolor='#75bbfd')
 
@@ -8,13 +8,13 @@ figures = []
 
 
 def select_file(x):
-    file = fileopenbox(title='Vyberte kalibracny subor', filetypes=[['*.txt', 'Text File']])
+    file = askopenfilename(title='Vyberte kalibracny subor', filetypes=[('Text File', '*.txt')])
 
     read_file(file)
 
 
 def read_file(file, delimeter='\t'):
-    if file is None: return
+    if file is None or file == '': return
 
     with open(file, "r") as f:
         line = f.readline()
