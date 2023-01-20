@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import ttk
+import Calibration
 
 
 class GUI(Tk):
@@ -163,7 +164,7 @@ class MotorControlFrame(FrameBaseClass):
         self.placeWidgets()
 
     # z nejako dovodu pri commandoch pri scale widgeti musi byt aj to "v" premenna, inak to pada idk why
-    def test(self,v):
+    def test(self, v):
         print(self.scrollBarVal.get())
 
     def placeWidgets(self):
@@ -395,6 +396,7 @@ class CameraSettingsFrame(FrameBaseClass):
 # TODO VYBERANIE FILEU
 class CalibrationFrame(FrameBaseClass):
     def __init__(self):
+        self.calibration = Calibration.Calibration()
         super().__init__()
         self.tkraise()
 
@@ -411,14 +413,18 @@ class CalibrationFrame(FrameBaseClass):
 
         # Buttons
         self.calibrationFileButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH, "Choose")
-        self.calibrationFileButton.configure(command=lambda: self.FUNCTION_TODO("ARGUMENT"))
+        self.calibrationFileButton.configure(command=lambda: self.FUNCTION_TODO(Calibration.CalibrationHandler()
+                                                                            .calibrateFromFile(self.calibration, 3)))
 
         self.calibrationChartCreateButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH,
                                                                   "Create")
-        self.calibrationChartCreateButton.configure(command=lambda: self.FUNCTION_TODO("ARGUMENT"))
+        self.calibrationChartCreateButton.configure(command=lambda: self.FUNCTION_TODO(Calibration.CalibrationHandler
+                                                                .calibrateFromApp(self.calibration, self.calibrationText
+                                                                                  .get("1.0", END), 3)))
 
         self.calibrationChartShowButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH, "Show")
-        self.calibrationChartShowButton.configure(command=lambda: self.FUNCTION_TODO("ARGUMENT"))
+        self.calibrationChartShowButton.configure(command=lambda: self.FUNCTION_TODO(Calibration.CalibrationRender().
+                                                                                     render(self.calibration)))
 
         # Text
         self.calibrationText = Text(self, width=30, height=15)
@@ -428,7 +434,7 @@ class CalibrationFrame(FrameBaseClass):
                                                          END)  # to "1.0" znamena ze beriem text od 1 riadka a 0 znaku.. proste beries text od zaciatku po kiniec"
 
         # ukazka jak sa insertuje do textboxu
-        self.calibrationText.insert("1.0", "10 10.4 \n11 11.4 \n12 12.4 \n13 14.4\n")
+        # self.calibrationText.insert("1.0", "10 10.4 \n11 11.4 \n12 12.4 \n13 14.4\n")
 
         self.placeWidgets()
 
