@@ -1,8 +1,11 @@
 from tkinter import *
 from tkinter import ttk
-import Calibration
+from Calibration import *
 
 from camera.Plot import Plot
+from camera.Camera import Camera
+
+
 
 class GUI(Tk):
     def __init__(self):
@@ -11,6 +14,7 @@ class GUI(Tk):
         self.MASTER_WIDTH = 1500
         self.MASTER_HEIGHT = 750
 
+        self.camera = Camera(0)
         # Setting master window size
         self.geometry(f"{self.MASTER_WIDTH}x{self.MASTER_HEIGHT}")
 
@@ -37,6 +41,7 @@ class GUI(Tk):
         self.spectroImageFrame.pack(pady=(30, 0))
         self.graphImageFrame.pack(pady=(20, 0))
         self.motorControlsFrame.pack(side=BOTTOM)
+
 
         self.mainloop()
 
@@ -88,8 +93,10 @@ class FrameBaseClass(Frame):
         for widgets in self.winfo_children():
             widgets.grid_forget()
 
-    def FUNCTION_TODO(self, argument):
-        print(argument)
+    def FUNCTION_TODO(self, frameWidget):
+        plot = Plot(frameWidget)
+        plot.show_plot()
+        # print(argument)
 
 
 class SpectroImageFrame(FrameBaseClass):
@@ -120,7 +127,7 @@ class GraphImageFrame(FrameBaseClass):
 
     def placeWidgets(self):
         self.plot.show_plot()
-        self.plot.camera.showImage()
+        # self.plot.camera.showImage()
 
 
 # TODO SCROLLBAR ABY UPDATEOVAL LABEL
@@ -400,6 +407,7 @@ class CalibrationFrame(FrameBaseClass):
     def __init__(self):
         super().__init__()
         self.tkraise()
+        self.calibration = Calibration()
 
         # Setting color of frame
         self.configure(bg=self.FRAME_COLOR)
@@ -414,17 +422,17 @@ class CalibrationFrame(FrameBaseClass):
 
         # Buttons
         self.calibrationFileButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH, "Choose")
-        self.calibrationFileButton.configure(command=lambda: self.FUNCTION_TODO(Calibration.CalibrationHandler()
+        self.calibrationFileButton.configure(command=lambda: self.FUNCTION_TODO(CalibrationHandler()
                                                                             .calibrateFromFile(self.calibration, 3)))
 
         self.calibrationChartCreateButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH,
                                                                   "Create")
-        self.calibrationChartCreateButton.configure(command=lambda: self.FUNCTION_TODO(Calibration.CalibrationHandler
+        self.calibrationChartCreateButton.configure(command=lambda: self.FUNCTION_TODO(CalibrationHandler()
                                                                 .calibrateFromApp(self.calibration, self.calibrationText
                                                                                   .get("1.0", END), 3)))
 
         self.calibrationChartShowButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH, "Show")
-        self.calibrationChartShowButton.configure(command=lambda: self.FUNCTION_TODO(Calibration.CalibrationRender().
+        self.calibrationChartShowButton.configure(command=lambda: self.FUNCTION_TODO(CalibrationRender().
                                                                                      render(self.calibration)))
 
         # Text

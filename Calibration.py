@@ -51,10 +51,18 @@ class CalibrationRender:
         self.offset = None
 
     def render(self, calibration):
+        # fig = plt.figure("  Kalibračný súbor spektrometra ",
+        #                  figsize=(10, 6),
+        #                  facecolor='xkcd:mint green',
+        #                  edgecolor='r',
+        #                  linewidth=4)
+
+
         if calibration.model is None:
             raise Exception("No Calibration!")
         legendPos = calibration.nm - calibration.model(calibration.pixels)
-        ax1 = plt.subplot(211)
+        # fig1 = plt.figure()
+        fig1, ax1 = plt.subplots()
         ax3 = plt.subplot(212)
         self.offset = np.max(calibration.pixels) / len(calibration.pixels)
         self.minx = np.min(calibration.pixels) - self.offset
@@ -67,7 +75,9 @@ class CalibrationRender:
         self._setax1(ax1)
         self._setax3(ax3)
 
-        plt.show()
+        fig1.show()
+        # plt.show(fig1)
+        # plt.show(fig2)
 
     # todo: spytat sa vojteka co by tam mohlo byt miesto HgAr--ortut
 
@@ -83,7 +93,7 @@ class CalibrationRender:
     def _setax1(ax1):
         ax1.set_xlabel('x - px')
         ax1.set_ylabel('y - nm')
-        ax1.set_title('Calibration chart')
+        # ax1.set_title('Calibration chart')
         ax1.grid(color='w')
         ax1.set_facecolor((0.9, 0.9, 0.9))
         ax1.legend()

@@ -2,6 +2,8 @@ import tkinter
 from tkinter import *
 from FrameBaseClass import FrameBaseClass
 from camera.Plot import Plot
+
+
 class GraphImageFrame(FrameBaseClass):
     def __init__(self):
         super().__init__()
@@ -14,4 +16,5 @@ class GraphImageFrame(FrameBaseClass):
         self.plot = Plot(self)
 
     def placeWidgets(self):
-        self.plot.show_plot()
+        # self.plot.show_plot()
+        pass

@@ -9,7 +9,7 @@ from matplotlib.animation import FuncAnimation
 
 
 class Plot:
-    def __init__(self, canvas, camera=Camera(0)):
+    def __init__(self, canvas, camera=Camera(1)):
         self.root = canvas
         self.camera = camera
 
