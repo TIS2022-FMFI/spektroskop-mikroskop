@@ -1,6 +1,6 @@
 from tkinter import *
 from tkinter import ttk
-
+from camera.Plot import Plot
 
 class GUI(Tk):
     def __init__(self):
@@ -112,12 +112,13 @@ class GraphImageFrame(FrameBaseClass):
         self.configure(bg="green", width=self.GRAPH_FRAME_WIDTH, height=self.GRAPH_FRAME_HEIGHT)
         # Setting that disables frame shrinkage to fit widgets
         self.propagate(False)
-
+        self.plot = Plot(self)
         # Initializing widgets
         self.placeWidgets()
 
     def placeWidgets(self):
-        pass
+        self.plot.show_plot()
+        self.plot.camera.showImage()
 
 
 # TODO SCROLLBAR ABY UPDATEOVAL LABEL
