@@ -1,13 +1,14 @@
 from tkinter import *
 from tkinter import filedialog
 from FrameBaseClass import FrameBaseClass
-from Calibration import Calibration
+from Calibration import *
 
 
-# TODO VYBERANIE FILEU
 class CalibrationFrame(FrameBaseClass):
     def __init__(self, plot):
         super().__init__()
+        # todo: potom si vytiahni tu kalibraciu kam uznas za vhodne, a sem ju posli iba ako argument, pre cely program
+        #  staci iba 1 cize je ok rovno do initu a tu si ju tiez ulozit
         self.calibrationModule = Calibration()
         self.plot = plot
 
@@ -24,21 +25,29 @@ class CalibrationFrame(FrameBaseClass):
 
         # Buttons
         self.calibrationFileButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH, "Choose")
-        self.calibrationFileButton.configure(command=self.loadCalibrationFile)
+        self.calibrationFileButton.configure(command=lambda: self.FUNCTION_TODO(CalibrationHandler()
+                                                                                .calibrateFromFile(
+                                                                                self.calibrationModule, 3)))
 
         self.calibrationChartCreateButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH,
                                                                   "Create")
-        self.calibrationChartCreateButton.configure(command=self.saveCalibrationFile)
+        self.calibrationChartCreateButton.configure(command=lambda: self.FUNCTION_TODO(CalibrationHandler()
+                                                                                .calibrateFromApp(
+                                                                                    self.calibrationModule,
+                                                                                    self.calibrationText
+                                                                                    .get("1.0", END), 3)))
 
         self.calibrationChartShowButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH, "Show")
-        self.calibrationChartShowButton.configure(command=lambda: self.FUNCTION_TODO("ARGUMENT"))
+        self.calibrationChartShowButton.configure(command=lambda: self.FUNCTION_TODO(CalibrationRender()
+                                                                                     .render(self.calibrationModule)))
 
         # Text
         self.calibrationText = Text(self, width=30, height=15)
 
         # Text value
         self.calibrationValue = self.calibrationText.get("1.0",
-                                                         END)  # to "1.0" znamena ze beriem text od 1 riadka a 0 znaku.. proste beries text od zaciatku po kiniec"
+                                                         END)  # to "1.0" znamena ze beriem text od 1 riadka a 0
+                                                               # znaku.. proste beries text od zaciatku po koniec"
         self.placeWidgets()
 
     def placeWidgets(self):
@@ -58,13 +67,13 @@ class CalibrationFrame(FrameBaseClass):
 
     def loadCalibrationFile(self):
         # Getting the address of the selected file
-        fileAddress = filedialog.askopenfilename(filetypes=(('text files', '*.txt'),('All files', '*.*')))
+        fileAddress = filedialog.askopenfilename(filetypes=(('text files', '*.txt'), ('All files', '*.*')))
 
         if fileAddress == "":  # fileAddress return "" if dialog closed with "cancel".
             return
 
         # Opening selected file and reading its content
-        with open(fileAddress,'r') as file:
+        with open(fileAddress, 'r') as file:
             text = file.read()
 
         # Deleting content of text widget and then inserting contents of selected file
@@ -73,7 +82,7 @@ class CalibrationFrame(FrameBaseClass):
 
     def saveCalibrationFile(self):
         # "Creating" the file
-        file = filedialog.asksaveasfile(mode="w",defaultextension="*.txt",filetypes=[('Text Document', '*.txt')])
+        file = filedialog.asksaveasfile(mode="w", defaultextension="*.txt", filetypes=[('Text Document', '*.txt')])
         if file is None:  # asksaveasfile return `None` if dialog closed with "cancel".
             return
 
