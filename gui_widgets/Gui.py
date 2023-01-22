@@ -1,6 +1,7 @@
 from tkinter import *
 
 from camera.Camera import Camera
+from camera.Plot import Plot
 from gui_widgets.CalibrationFrame import CalibrationFrame
 from gui_widgets.CameraSettingsFrame import CameraSettingsFrame
 from gui_widgets.D32Frame import D32Frame
@@ -29,11 +30,19 @@ class GUI(Tk):
 
         # Initializing frame objects
         self.spectroImageFrame = SpectroImageFrame()
+
+        '''frame for live graph'''
         self.graphImageFrame = GraphImageFrame()
+        self.plot = Plot(self.graphImageFrame)
+        self.graphImageFrame.initPlot(self.plot)
+        self.graphImageFrame.placeWidgets()
+
+
+
         self.motorControlsFrame = MotorControlFrame()
 
         self.cameraSettingsFrame = CameraSettingsFrame()
-        self.calibrationFrame = CalibrationFrame()
+        self.calibrationFrame = CalibrationFrame(self.plot)
         self.d32Frame = D32Frame()
         self.graphFunctionFrame = GraphFunctionFrame()
         self.d3Frame = D3Frame()

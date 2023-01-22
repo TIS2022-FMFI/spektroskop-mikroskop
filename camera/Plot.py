@@ -58,6 +58,12 @@ class Plot:
         canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
         # plt.show()
 
+    def pause(self):
+        self.camera.pause()
+
+    def start(self):
+        self.camera.start()
+
 
 # ih = Plot()
 # ih.show_plot()

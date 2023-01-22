@@ -12,13 +12,10 @@ class GraphImageFrame(FrameBaseClass):
         # Setting that disables frame shrinkage to fit widgets
         self.propagate(False)
         # Initializing widgets
-        self.plot = Plot(self)
-        self.placeWidgets()
+        self.plot = None
+        # self.placeWidgets()
 
     def placeWidgets(self):
-        self.plot.show_plot()
-
-    def placeGraph(self):
         self.plot.show_plot()
 
     def initPlot(self, plot):

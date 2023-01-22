@@ -6,10 +6,10 @@ from Calibration import Calibration
 
 # TODO VYBERANIE FILEU
 class CalibrationFrame(FrameBaseClass):
-    def __init__(self):
+    def __init__(self, plot):
         super().__init__()
-
         self.calibrationModule = Calibration()
+        self.plot = plot
 
         # Setting color of frame
         self.configure(bg=self.FRAME_COLOR)
@@ -28,7 +28,7 @@ class CalibrationFrame(FrameBaseClass):
 
         self.calibrationChartCreateButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH,
                                                                   "Create")
-        self.calibrationChartCreateButton.configure(command= self.saveCalibrationFile)
+        self.calibrationChartCreateButton.configure(command=self.saveCalibrationFile)
 
         self.calibrationChartShowButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH, "Show")
         self.calibrationChartShowButton.configure(command=lambda: self.FUNCTION_TODO("ARGUMENT"))

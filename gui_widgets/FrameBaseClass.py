@@ -4,6 +4,7 @@ from tkinter import *
 class FrameBaseClass(Frame):
     def __init__(self):
         super().__init__()
+
         # Initializing constants, colors, fonts and images
         self.FONT = "Arial 10 bold"
         self.FONT_H = "Arial 15 bold"

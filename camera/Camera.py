@@ -10,11 +10,18 @@ class Camera:
         self.zoom = 1.0
         self.angle = 0.0
         self.chanel = 'r'
+        self.isCapturing = True
 
     def get_frame(self):
-        while True:
+        while self.isCapturing:
             _, frame = self.camera.read()
             yield frame
+
+    def pause(self):
+        self.isCapturing = False
+
+    def start(self):
+        self.isCapturing = True
 
     def release(self):
         self.camera.release()
