@@ -23,6 +23,8 @@ class NavbarFrame(FrameBaseClass):
         self.importExportFrame = importExportFrame
         self.cameraFeedTopLevel = cameraFeedTopLevel
 
+        self.plot = None
+
         # Initializing widgets in frame
 
         # Navbar1
@@ -30,10 +32,10 @@ class NavbarFrame(FrameBaseClass):
         self.settingsButton.configure(command=lambda: self.placeNavBar2())
 
         self.playButton = self.initializeButton(self.NAVBAR_BUTTON_SIZE, self.NAVBAR_BUTTON_SIZE, "")
-        self.playButton.configure(command=lambda: self.FUNCTION_TODO("ARGUMENT"), image=self.PLAY_IMAGE)
+        self.playButton.configure(command=lambda: self.start(), image=self.PLAY_IMAGE)
 
         self.pauseButton = self.initializeButton(self.NAVBAR_BUTTON_SIZE, self.NAVBAR_BUTTON_SIZE, "")
-        self.pauseButton.configure(command=lambda: self.FUNCTION_TODO("ARGUMENT"), image=self.STOP_IMAGE)
+        self.pauseButton.configure(command=lambda: self.pause(), image=self.STOP_IMAGE)
 
         self.graphFunButton = self.initializeButton(self.NAVBAR_BUTTON_SIZE, self.NAVBAR_BUTTON_SIZE, "Graph\nfun.")
         self.graphFunButton.configure(command=lambda: self.placeRemovePopupMenu("graphFunButton"))
@@ -139,3 +141,12 @@ class NavbarFrame(FrameBaseClass):
     def resetColorButtons(self):
         for button in self.buttonDict.values():
             button.configure(bg=self.BUTTON_COLOR, fg="white")
+
+    def initPlot(self, plot):
+        self.plot = plot
+
+    def start(self):
+        self.plot.resume()
+
+    def pause(self):
+        self.plot.pause()

@@ -1,4 +1,4 @@
-import cv2
+from threading import Thread
 import tkinter as tk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
@@ -10,8 +10,24 @@ from matplotlib.animation import FuncAnimation
 
 class Plot:
     def __init__(self, canvas, camera=Camera(1)):
-        self.root = canvas
+        self.fig, self.ax = plt.subplots()
         self.camera = camera
+        self.t = None
+        self.isPaused = False
+        self.canvas = FigureCanvasTkAgg(self.fig, master=canvas)
+        self.ani = None
+
+    def start(self):
+        self.t = Thread(target=self.canvas.draw())
+        self.t.start()
+
+    def pause(self):
+        self.ani.event_source.stop()
+        self.camera.pause()
+
+    def resume(self):
+        self.ani.event_source.start()
+        self.camera.start()
 
     def update_plot(self, frame, line):
         # get the red color values of the first line of the frame
@@ -46,23 +62,26 @@ class Plot:
     def show_plot(self):
         frame = self.camera.get_frame().__next__()
         red = frame[0, :, 2]
-        fig, ax = plt.subplots()
-        ax.set_xlim([0, 1280])
-        ax.set_ylim([0, 256])
+        # fig, ax = plt.subplots()
+        self.ax.set_xlim([0, 1280])
+        self.ax.set_ylim([0, 256])
         # ax.autoscale(enable=True, axis='both', tight=None)
-        line, = ax.plot(red)
-        ani = FuncAnimation(fig, self.update_plot, fargs=(line,), frames=self.camera.get_frame(), interval=10)
-        canvas = FigureCanvasTkAgg(fig, master=self.root)
-        # self.canvas = canvas = FigureCanvasTkAgg(fig, master=root)
-        canvas.draw()
-        canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+        line, = self.ax.plot(red)
+        self.ani = FuncAnimation(self.fig, self.update_plot, fargs=(line,), frames=self.camera.get_frame(), interval=10)
+        # ani.pause()
+        # canvas = FigureCanvasTkAgg(fig, master=self.root)
+        # t = Thread(target=canvas.draw())
+        # t.start()
+        # canvas.draw()
+        self.start()
+
+
+        self.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
         # plt.show()
 
-    def pause(self):
-        self.camera.pause()
 
-    def start(self):
-        self.camera.start()
+    # def start(self):
+    #     self.camera.start()
 
 
 # ih = Plot()

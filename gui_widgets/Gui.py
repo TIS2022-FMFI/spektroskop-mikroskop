@@ -51,6 +51,7 @@ class GUI(Tk):
         self.navbarFrame = NavbarFrame(self.cameraSettingsFrame, self.calibrationFrame, self.d32Frame,
                                        self.graphFunctionFrame, self.d3Frame, self.importExportFrame,
                                        self.cameraFeedTopLevel)
+        self.navbarFrame.initPlot(self.plot)
         # Placing frame objects into the window
         self.navbarFrame.pack(side=LEFT, fill=Y)
         self.spectroImageFrame.pack(pady=(30, 0))
