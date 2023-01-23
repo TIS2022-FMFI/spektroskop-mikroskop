@@ -5,8 +5,8 @@ from camera.Plot import Plot
 class Application:
     def __init__(self):
         self.gui = GUI()
-        self.plot = Plot(self.gui.graphImageFrame)
-        self.gui.graphImageFrame.initPlot(self.plot)
+        # self.plot = Plot(self.gui.graphImageFrame)
+        # self.gui.graphImageFrame.initPlot(self.plot)
         # self.gui.graphImageFrame.placeGraph()
 
 

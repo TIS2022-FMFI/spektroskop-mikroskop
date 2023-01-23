@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import filedialog
-from FrameBaseClass import FrameBaseClass
-from Calibration import *
+from gui_widgets.FrameBaseClass import FrameBaseClass
+from gui_widgets.Calibration import *
 
 
 class CalibrationFrame(FrameBaseClass):
@@ -11,6 +11,7 @@ class CalibrationFrame(FrameBaseClass):
         #  staci iba 1 cize je ok rovno do initu a tu si ju tiez ulozit
         self.calibrationModule = Calibration()
         self.plot = plot
+        self.calibrationModule.initPlot(plot)
 
         # Setting color of frame
         self.configure(bg=self.FRAME_COLOR)
@@ -79,6 +80,7 @@ class CalibrationFrame(FrameBaseClass):
         # Deleting content of text widget and then inserting contents of selected file
         self.calibrationText.delete("1.0", END)
         self.calibrationText.insert("1.0", text)
+
 
     def saveCalibrationFile(self):
         # "Creating" the file

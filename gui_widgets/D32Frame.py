@@ -1,5 +1,5 @@
 from tkinter import *
-from FrameBaseClass import FrameBaseClass
+from gui_widgets.FrameBaseClass import FrameBaseClass
 
 class D32Frame(FrameBaseClass):
     def __init__(self):

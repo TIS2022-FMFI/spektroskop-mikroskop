@@ -1,6 +1,6 @@
 from tkinter import *
 from tkinter import ttk
-from FrameBaseClass import FrameBaseClass
+from gui_widgets.FrameBaseClass import FrameBaseClass
 
 
 # TODO LOGIKA PRI ZMENE CONNECTION OBRAZKA

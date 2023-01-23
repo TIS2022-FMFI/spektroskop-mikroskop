@@ -10,7 +10,10 @@ class Calibration:
         self.pixels = []
         self.filepath = defaultPath
         # self.calibrationChart = None
+        self.plot = None
 
+    def initPlot(self, plot):
+        self.plot = plot
     def chooseFile(self):
         self.filepath = askopenfilename(
             filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")]
@@ -43,6 +46,11 @@ class Calibration:
 
     def calculateModel(self, polynomDegree=3):
         self.model = np.poly1d(np.polyfit(self.pixels, self.nm, polynomDegree))
+        self.plot.initModel(self.model)
+
+
+    def getModel(self):
+        return self.model
 
 
 class CalibrationRender:

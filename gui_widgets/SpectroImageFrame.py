@@ -1,5 +1,4 @@
-from tkinter import *
-from FrameBaseClass import FrameBaseClass
+from gui_widgets.FrameBaseClass import FrameBaseClass
 
 
 class SpectroImageFrame(FrameBaseClass):
@@ -9,9 +8,10 @@ class SpectroImageFrame(FrameBaseClass):
         self.configure(bg="red", width=self.SPECTROMETER_FRAME_WIDTH, height=self.SPECTROMETER_FRAME_HEIGHT)
         # Setting that disables frame shrinkage to fit widgets
         self.propagate(False)
-
-        # Initializing widgets
-        self.placeWidgets()
+        self.camera = None
 
     def placeWidgets(self):
         pass
+
+    def initCamera(self, camera):
+        self.camera = camera

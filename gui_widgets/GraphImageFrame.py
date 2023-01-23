@@ -1,7 +1,4 @@
-import tkinter
-from tkinter import *
-from FrameBaseClass import FrameBaseClass
-from camera.Plot import Plot
+from gui_widgets.FrameBaseClass import FrameBaseClass
 
 
 class GraphImageFrame(FrameBaseClass):

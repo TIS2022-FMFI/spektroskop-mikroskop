@@ -1,5 +1,6 @@
 from threading import Thread
 import tkinter as tk
+from tkinter import *
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 from camera.Camera import Camera
@@ -16,6 +17,18 @@ class Plot:
         self.isPaused = False
         self.canvas = FigureCanvasTkAgg(self.fig, master=canvas)
         self.ani = None
+        self.cameraCanvas = None
+        self.label = None
+
+        self.model = None
+
+    def initModel(self, model):
+        self.model = model
+
+    def initCameraCanvas(self, cameraCanvas):
+        self.cameraCanvas = cameraCanvas
+        self.label = Label(self.cameraCanvas)
+        self.label.pack()
 
     def start(self):
         self.t = Thread(target=self.canvas.draw())
@@ -31,9 +44,13 @@ class Plot:
 
     def update_plot(self, frame, line):
         # get the red color values of the first line of the frame
+        self.camera.showImage(frame)
         if self.camera.chanel == 'r':
             # red_line = frame[250,:,2]
-            red_line = self.avgLines(frame, 0, 640, 2)
+            if self.model:
+                red_line = self.model(self.avgLines(frame, 0, 640, 2))
+            else:
+                red_line = self.avgLines(frame, 0, 640, 2)
             line.set_data(range(len(red_line)), red_line)
             line.set_color("red")
         if self.camera.chanel == 'g':
@@ -46,7 +63,10 @@ class Plot:
             line.set_color("blue")
         if self.camera.chanel == 'a':
             # a for all (max of r, g, b)
-            max_value = np.maximum(np.maximum(frame[250, :, 0], frame[250, :, 1]), frame[250, :, 2])
+            if self.model:
+                max_value = self.model(np.maximum(np.maximum(frame[250, :, 0], frame[250, :, 1]), frame[250, :, 2]))
+            else:
+                max_value = np.maximum(np.maximum(frame[250, :, 0], frame[250, :, 1]), frame[250, :, 2])
             line.set_data(range(len(max_value)), max_value)
             line.set_color("black")
 
@@ -62,29 +82,10 @@ class Plot:
     def show_plot(self):
         frame = self.camera.get_frame().__next__()
         red = frame[0, :, 2]
-        # fig, ax = plt.subplots()
         self.ax.set_xlim([0, 1280])
-        self.ax.set_ylim([0, 256])
-        # ax.autoscale(enable=True, axis='both', tight=None)
+        self.ax.set_ylim([0, 1000])
         line, = self.ax.plot(red)
         self.ani = FuncAnimation(self.fig, self.update_plot, fargs=(line,), frames=self.camera.get_frame(), interval=10)
-        # ani.pause()
-        # canvas = FigureCanvasTkAgg(fig, master=self.root)
-        # t = Thread(target=canvas.draw())
-        # t.start()
-        # canvas.draw()
         self.start()
 
-
         self.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-        # plt.show()
-
-
-    # def start(self):
-    #     self.camera.start()
-
-
-# ih = Plot()
-# ih.show_plot()
-# ih.camera.release()
-# cv2.destroyAllWindows()

@@ -21,19 +21,24 @@ class GUI(Tk):
         self.MASTER_WIDTH = 1500
         self.MASTER_HEIGHT = 750
 
-        self.camera = Camera(0)
+        self.model = None
+
         # Setting master window size
         self.geometry(f"{self.MASTER_WIDTH}x{self.MASTER_HEIGHT}")
 
         # Initializing window for camera feed
         self.cameraFeedTopLevel = Toplevel()
 
-        # Initializing frame objects
+        '''frame for camera image'''
         self.spectroImageFrame = SpectroImageFrame()
+        self.camera = Camera(0)
+        self.camera.initCanvas(self.spectroImageFrame)
+        self.spectroImageFrame.initCamera(self.camera)
+        self.spectroImageFrame.placeWidgets()
 
         '''frame for live graph'''
         self.graphImageFrame = GraphImageFrame()
-        self.plot = Plot(self.graphImageFrame)
+        self.plot = Plot(self.graphImageFrame, self.camera)
         self.graphImageFrame.initPlot(self.plot)
         self.graphImageFrame.placeWidgets()
 
