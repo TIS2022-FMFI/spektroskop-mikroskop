@@ -39,8 +39,6 @@ class GUI(Tk):
         '''frame for live graph'''
         self.graphImageFrame = GraphImageFrame()
         self.plot = Plot(self.graphImageFrame, self.camera)
-        self.graphImageFrame.initPlot(self.plot)
-        self.graphImageFrame.placeWidgets()
 
 
 
@@ -56,12 +54,32 @@ class GUI(Tk):
         self.navbarFrame = NavbarFrame(self.cameraSettingsFrame, self.calibrationFrame, self.d32Frame,
                                        self.graphFunctionFrame, self.d3Frame, self.importExportFrame,
                                        self.cameraFeedTopLevel)
-        self.navbarFrame.initPlot(self.plot)
         # Placing frame objects into the window
         self.navbarFrame.pack(side=LEFT, fill=Y)
         self.spectroImageFrame.pack(pady=(30, 0))
         self.graphImageFrame.pack(pady=(20, 0))
         self.motorControlsFrame.pack(side=BOTTOM)
 
+        '''init plot for frames that has dependancy on it'''
+        self.initPlots()
+        self.placeWidets()
 
         self.mainloop()
+        self.plot.release()
+        self.quit()
+
+        self.release()
+
+    def release(self):
+        self.plot.release()
+        self.destroy()
+
+    def initPlots(self):
+        self.graphImageFrame.initPlot(self.plot)
+        self.navbarFrame.initPlot(self.plot)
+        self.cameraSettingsFrame.initPlot(self.plot)
+
+    def placeWidets(self):
+        self.graphImageFrame.placeWidgets()
+
+
