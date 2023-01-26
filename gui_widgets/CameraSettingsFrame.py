@@ -8,6 +8,8 @@ class CameraSettingsFrame(FrameBaseClass):
     def __init__(self):
         super().__init__()
 
+        self.plot = None
+
         # Setting color of frame
         self.configure(bg=self.FRAME_COLOR)
 
@@ -25,13 +27,13 @@ class CameraSettingsFrame(FrameBaseClass):
 
         # Buttons
         self.setCameraLinesButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH, "Set")
-        self.setCameraLinesButton.configure(command=lambda: self.FUNCTION_TODO("ARGUMENT"))
+        self.setCameraLinesButton.configure(command=lambda: self.getLines())
 
         self.setCameraCamerasButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH, "Set")
         self.setCameraCamerasButton.configure(command=lambda: self.FUNCTION_TODO("ARGUMENT"))
 
         self.setExposureTimeButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH, "Set")
-        self.setExposureTimeButton.configure(command=lambda: self.FUNCTION_TODO("ARGUMENT"))
+        self.setExposureTimeButton.configure(command=lambda: self.getExposureTime())
 
         # Entries
         self.lineEntry = self.initializeEntry(15)
@@ -78,4 +80,25 @@ class CameraSettingsFrame(FrameBaseClass):
         self.setExposureTimeButton.grid(sticky=E, row=10, column=0, pady=(10, 10))
         self.connectionLabel.grid(sticky=W, row=11, column=0, pady=(10, 10))
         self.connectionSignalImage.grid(row=11, column=0, pady=(10, 10), padx=(30, 0))
+
+    def getMainLine(self):
+        self.plot.setMainLine(int(self.lineEntry.get()))
+
+    def getExtraLines(self):
+        try:
+            self.plot.setExtraLines(int(self.extraLinesEntry.get()))
+        except ValueError:
+            pass
+
+    def getLines(self):
+        self.getMainLine()
+        self.getExtraLines()
+
+    def getExposureTime(self):
+        self.plot.setExposureTimeForCamera(self.exposureTimeEntry.get())
+
+    def initPlot(self, plot):
+        self.plot = plot
+
+
 

@@ -5,8 +5,12 @@ import cv2
 
 class Camera:
     def __init__(self, cameraId=0):
+        self.camerHight = 640
+        self.cameraWidth = 1200
+
         self.camera = cv2.VideoCapture(cameraId)
-        self.camera.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+        self.camera.set(cv2.CAP_PROP_FRAME_WIDTH, self.cameraWidth)
+        self.cameraId = cameraId
         self.zoom = 1.0
         self.angle = 0.0
         self.chanel = 'a'
@@ -31,9 +35,7 @@ class Camera:
         self.myCanvas.configure(yscrollcommand=self.scrollbar.set)
         self.scrollbar.pack(side=RIGHT, fill=Y)
 
-        self.myCanvas.create_window((0, 0), window=frame, anchor=NW)
-
-        self.myCanvas.config(scrollregion=(0,0,0,640))
+        self.myCanvas.config(scrollregion=(0, 0, 0, self.camerHight))
 
 
     def get_frame(self):
@@ -41,11 +43,22 @@ class Camera:
             _, frame = self.camera.read()
             yield frame
 
-    def pause(self):
-        self.isCapturing = False
+    def showImage(self, frame):
+        cv2image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        img = Image.fromarray(cv2image)
+        # Convert image to PhotoImage
+        imgtk = ImageTk.PhotoImage(image=img)
+        self.label.imgtk = imgtk
+        self.myCanvas.create_image(0, 0, image=imgtk, anchor=NW)
 
     def start(self):
+        self.camera = cv2.VideoCapture(self.cameraId)
+        self.camera.set(cv2.CAP_PROP_FRAME_WIDTH, self.cameraWidth)
         self.isCapturing = True
+
+    def pause(self):
+        self.isCapturing = False
+        self.release()
 
     def release(self):
         self.camera.release()
@@ -55,11 +68,10 @@ class Camera:
 
     def setColorChanel(self, chanel):
         self.chanel = chanel
+    def getCameraHeight(self):
+        return self.camerHight
 
-    def showImage(self, frame):
-        cv2image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        img = Image.fromarray(cv2image)
-        # Convert image to PhotoImage
-        imgtk = ImageTk.PhotoImage(image=img)
-        self.label.imgtk = imgtk
-        self.myCanvas.create_image(0, 0, image=imgtk, anchor=NW)
+    def getCameraWidht(self):
+        return self.cameraWidth
+
+

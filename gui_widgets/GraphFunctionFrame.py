@@ -27,7 +27,7 @@ class GraphFunctionFrame(FrameBaseClass):
 
         # Buttons
         self.measurementsSetButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH, "Set")
-        self.measurementsSetButton.configure(command=lambda: self.FUNCTION_TODO("ARGUMENT"))
+        self.measurementsSetButton.configure(command=lambda: self.getMin())
 
         self.referenceImageButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH, "Set")
         self.referenceImageButton.configure(command=lambda: self.FUNCTION_TODO("ARGUMENT"))
@@ -110,3 +110,6 @@ class GraphFunctionFrame(FrameBaseClass):
         self.scaleLabel.grid(sticky=W, row=11, column=0, pady=(10, 10))
         self.radioPx.grid(row=11, column=1, pady=(10, 0))
         self.radioNm.grid(row=11, column=2, pady=(10, 0))
+
+    def getMin(self):
+        return self.peakMinYEntry.get()
