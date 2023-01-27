@@ -71,17 +71,13 @@ class Plot:
                 line.set_color("black")
 
     def avgLines(self, frame, lineFrom, lineTo, color=2):
-        line = []
-        selectedLines = []
-
         if lineFrom == lineTo:
             line = frame[self.mainLine, :, color]
             return line
 
-        for i in range(lineFrom, lineTo):
-            selectedLines.append(frame[i, :, color])
-        for i in range(self.camera.getCameraWidht()):
-            line.append(np.mean([li[i] for li in selectedLines]))
+        selectedLines = frame[lineFrom:lineTo, :, color]
+        line = np.mean(selectedLines, axis=0)
+
         return line
 
     def show_plot(self):
