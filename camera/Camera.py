@@ -47,6 +47,7 @@ class Camera:
         cv2image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         img = Image.fromarray(cv2image)
         # Convert image to PhotoImage
+        img = img.resize((self.myCanvas.winfo_width(), self.camerHight), Image.ANTIALIAS)
         imgtk = ImageTk.PhotoImage(image=img)
         self.label.imgtk = imgtk
         self.myCanvas.create_image(0, 0, image=imgtk, anchor=NW)

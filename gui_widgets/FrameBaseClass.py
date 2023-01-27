@@ -19,7 +19,7 @@ class FrameBaseClass(Frame):
         self.BUTTON_SIZE_HEIGHT = 20
         self.BUTTON_SIZE_WIDTH = 80
 
-        self.SPECTROMETER_FRAME_WIDTH = 1280
+        self.SPECTROMETER_FRAME_WIDTH = self.winfo_screenwidth() * 0.9
         self.SPECTROMETER_FRAME_HEIGHT = 100
 
         self.GRAPH_FRAME_WIDTH = self.winfo_screenwidth() * 0.9
