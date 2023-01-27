@@ -64,10 +64,11 @@ class Camera:
         self.camera.release()
 
     def setExposureTime(self, exposureTime):
-        self.camera.set(cv2.CAP_PROP_EXPOSURE, exposureTime)
+        self.camera.set(cv2.CAP_PROP_EXPOSURE, int(exposureTime))
 
     def setColorChanel(self, chanel):
         self.chanel = chanel
+
     def getCameraHeight(self):
         return self.camerHight
 
