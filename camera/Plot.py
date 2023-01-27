@@ -19,6 +19,8 @@ class Plot:
         self.ani = None
         self.cameraCanvas = None
         self.label = None
+
+        self.showWavelengt = False
         self.model = None
 
         '''sets defoult capturing line to be middle of comarea capture'''
@@ -94,6 +96,13 @@ class Plot:
         self.canvas.draw()
         self.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
 
+    def showPixelView(self):
+        self.ax.set_xlim([0, self.camera.getCameraWidht()])
+
+    def showWavelengthView(self):
+        if self.model:
+            self.ax.set_xlim(self.model([0, 1280]))
+
     def start(self):
         self.t = Thread(target=self.canvas.draw())
         self.t.start()
@@ -112,7 +121,6 @@ class Plot:
 
     def initModel(self, model):
         self.model = model
-        self.ax.set_xlim(self.model([0, 1280]))
 
     def initCameraCanvas(self, cameraCanvas):
         self.cameraCanvas = cameraCanvas
@@ -160,3 +168,4 @@ class Plot:
     def setDivision(self):
         self.doDivison = True
         self.doSubtraction = False
+

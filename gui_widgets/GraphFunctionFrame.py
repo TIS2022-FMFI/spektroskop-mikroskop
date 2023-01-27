@@ -70,9 +70,9 @@ class GraphFunctionFrame(FrameBaseClass):
         # Na ziskania value pouzi  self.scaleVar.get() . Values = 1 alebo 2. 1 = px , 2 = nm
 
         self.radioPx = Radiobutton(self, text="px", bg=self.FRAME_COLOR, activebackground=self.FRAME_COLOR,
-                                   variable=self.scaleVar, value=1, command=lambda: self.FUNCTION_TODO("KMS"))
+                                   variable=self.scaleVar, value=1, command=lambda: self.setPixelView())
         self.radioNm = Radiobutton(self, text="nm", bg=self.FRAME_COLOR, activebackground=self.FRAME_COLOR,
-                                   variable=self.scaleVar, value=2, command=lambda: self.FUNCTION_TODO("XDDD"))
+                                   variable=self.scaleVar, value=2, command=lambda: self.setWavelentgthView())
 
         # Placing widgets into frame
         self.placeWidgets()
@@ -127,3 +127,9 @@ class GraphFunctionFrame(FrameBaseClass):
 
     def doDivision(self):
         self.plot.setDivision()
+
+    def setPixelView(self):
+        self.plot.showPixelView()
+
+    def setWavelentgthView(self):
+        self.plot.showWavelengthView()
