@@ -18,13 +18,13 @@ class GUI(Tk):
     def __init__(self):
         super().__init__()
         # Initializing constants
-        self.MASTER_WIDTH = 1500
-        self.MASTER_HEIGHT = 750
+        # self.MASTER_WIDTH = 1500
+        # self.MASTER_HEIGHT = 750
 
         self.model = None
 
         # Setting master window size
-        self.geometry(f"{self.MASTER_WIDTH}x{self.MASTER_HEIGHT}")
+        # self.geometry(f"{self.MASTER_WIDTH}x{self.MASTER_HEIGHT}")
 
         # Initializing window for camera feed
         self.cameraFeedTopLevel = Toplevel()
@@ -78,6 +78,7 @@ class GUI(Tk):
         self.graphImageFrame.initPlot(self.plot)
         self.navbarFrame.initPlot(self.plot)
         self.cameraSettingsFrame.initPlot(self.plot)
+        self.graphFunctionFrame.initPlot(self.plot)
 
     def placeWidets(self):
         self.graphImageFrame.placeWidgets()

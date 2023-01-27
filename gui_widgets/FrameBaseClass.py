@@ -22,7 +22,7 @@ class FrameBaseClass(Frame):
         self.SPECTROMETER_FRAME_WIDTH = 1280
         self.SPECTROMETER_FRAME_HEIGHT = 100
 
-        self.GRAPH_FRAME_WIDTH = 1280
+        self.GRAPH_FRAME_WIDTH = self.winfo_screenwidth() * 0.9
         self.GRAPH_FRAME_HEIGHT = 500
 
         self.IMAGE_TRICK = PhotoImage(width=1, height=1)  # Used for a trick that lets you enable button sizes by px

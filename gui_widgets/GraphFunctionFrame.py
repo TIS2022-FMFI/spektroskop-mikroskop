@@ -10,6 +10,8 @@ class GraphFunctionFrame(FrameBaseClass):
         # Setting color of frame
         self.configure(bg=self.FRAME_COLOR)
 
+        self.plot = None
+
         # Initializing widgets in frame
 
         # Labels
@@ -30,13 +32,13 @@ class GraphFunctionFrame(FrameBaseClass):
         self.measurementsSetButton.configure(command=lambda: self.getMin())
 
         self.referenceImageButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH, "Set")
-        self.referenceImageButton.configure(command=lambda: self.FUNCTION_TODO("ARGUMENT"))
+        self.referenceImageButton.configure(command=lambda: self.getReferenceImage())
 
         self.divideFromReferenceButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH, "Set")
-        self.divideFromReferenceButton.configure(command=lambda: self.FUNCTION_TODO("ARGUMENT"))
+        self.divideFromReferenceButton.configure(command=lambda: self.doDivision())
 
         self.subtractFromReferenceButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH, "Set")
-        self.subtractFromReferenceButton.configure(command=lambda: self.FUNCTION_TODO("ARGUMENT"))
+        self.subtractFromReferenceButton.configure(command=lambda: self.doSubtraction())
 
         # Entries
         self.peakMinYEntry = self.initializeEntry(20)
@@ -111,5 +113,17 @@ class GraphFunctionFrame(FrameBaseClass):
         self.radioPx.grid(row=11, column=1, pady=(10, 0))
         self.radioNm.grid(row=11, column=2, pady=(10, 0))
 
+    def initPlot(self, plot):
+        self.plot = plot
+
+    def getReferenceImage(self):
+        self.plot.setReferenceData()
+
     def getMin(self):
         return self.peakMinYEntry.get()
+
+    def doSubtraction(self):
+        self.plot.setSubstraction()
+
+    def doDivision(self):
+        self.plot.setDivision()

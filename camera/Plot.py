@@ -23,47 +23,50 @@ class Plot:
 
         '''sets defoult capturing line to be middle of comarea capture'''
         self.mainLine = self.camera.getCameraHeight() // 2
-        self.extraLines = None
+        self.lineFrom = None
+        self.lineTo = None
 
+        self.doDivison = False
+        self.doSubtraction = False
+
+        self.referenceData = None
 
     def update_plot(self, frame, line):
         # get the red color values of the first line of the frame
         self.camera.showImage(frame)
 
-        '''set lines range with chack to bounds'''
-        if (self.extraLines is None) or (self.extraLines == 0):
-            lineFrom = lineTo = self.mainLine
-        else:
-            lineFrom = max(self.mainLine - self.extraLines, 0)
-            lineTo = min(self.mainLine + self.extraLines, self.camera.getCameraHeight())
-
         if self.camera.chanel == 'r':
             '''number 2 is for second index in GBR frame'''
-            redLine = self.avgLines(frame, lineFrom, lineTo, 2)
+            redLine = self.getRedLine(frame)
             line.set_data(range(len(redLine)), redLine)
             line.set_color("red")
 
         if self.camera.chanel == 'g':
             '''number 0 is for zeroth index in GBR frame'''
-            greenLine = self.avgLines(frame, lineFrom, lineTo, 0)
+            greenLine = self.getGreenLine(frame)
             line.set_data(range(len(greenLine)), greenLine)
             line.set_color("green")
 
         if self.camera.chanel == 'b':
             '''number 2 is for first index in GBR frame'''
-            blueLine = self.avgLines(frame, lineFrom, lineTo, 1)
+            blueLine = self.getBlueLine(frame)
             line.set_data(range(len(blueLine)), blueLine)
             line.set_color("blue")
 
         if self.camera.chanel == 'a':
             '''a is for max value from GBR colours'''
-            redLine = self.avgLines(frame, lineFrom, lineTo, 2)
-            greenLine = self.avgLines(frame, lineFrom, lineTo, 0)
-            blueLine = self.avgLines(frame, lineFrom, lineTo, 1)
-
-            maxValue = np.maximum.reduce([redLine, greenLine, blueLine])
-            line.set_data(range(len(maxValue)), maxValue)
-            line.set_color("black")
+            maxValue = self.getMaxLine(frame)
+            if self.doSubtraction:
+                subtractedLine = np.subtract(maxValue, self.referenceData).astype(np.int8)
+                self.ax.set_ylim([min(subtractedLine), max(subtractedLine)])
+                line.set_data(range(len(subtractedLine)), subtractedLine)
+            elif self.doDivison:
+                dividedLine = np.divide(maxValue, self.referenceData)
+                self.ax.set_ylim([min(dividedLine), max(dividedLine)])
+                line.set_data(range(len(dividedLine)), dividedLine)
+            else:
+                line.set_data(range(len(maxValue)), maxValue)
+                line.set_color("black")
 
     def avgLines(self, frame, lineFrom, lineTo, color=2):
         line = []
@@ -86,7 +89,7 @@ class Plot:
         self.ax.set_xlim([0, self.camera.getCameraWidht()])
         self.ax.set_ylim([0, 300])
         line, = self.ax.plot(red)
-        self.ani = FuncAnimation(self.fig, self.update_plot, fargs=(line,), frames=self.camera.get_frame(), interval=10)
+        self.ani = FuncAnimation(self.fig, self.update_plot, fargs=(line,), frames=self.camera.get_frame(), interval=100)
         self.start()
         self.canvas.draw()
         self.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
@@ -116,11 +119,44 @@ class Plot:
         self.label = Label(self.cameraCanvas)
         self.label.pack()
 
+    def getRedLine(self, frame):
+        return self.avgLines(frame, self.lineFrom, self.lineTo, 2)
+
+    def getGreenLine(self, frame):
+        return self.avgLines(frame, self.lineFrom, self.lineTo, 0)
+
+    def getBlueLine(self, frame):
+        return self.avgLines(frame, self.lineFrom, self.lineTo, 1)
+
+    def getMaxLine(self, frame):
+        redLine = self.getRedLine(frame)
+        greenLine = self.getGreenLine(frame)
+        blueLine = self.getBlueLine(frame)
+        return np.maximum.reduce([redLine, greenLine, blueLine])
+
     def setMainLine(self, mainLine):
         self.mainLine = mainLine
 
     def setExtraLines(self, extraLines):
-        self.extraLines = extraLines
+
+        """set lines range with chack to bounds"""
+        if (extraLines is None) or (extraLines == 0):
+            self.lineFrom = self.lineTo = self.mainLine
+        else:
+            self.lineFrom = max(self.mainLine - extraLines, 0)
+            self.lineTo = min(self.mainLine + extraLines, self.camera.getCameraHeight())
 
     def setExposureTimeForCamera(self, exposureTieme):
         self.camera.setExposureTime(exposureTieme)
+
+    def setReferenceData(self):
+        self.referenceData = self.getMaxLine(self.camera.get_frame().__next__())
+        print(self.referenceData)
+
+    def setSubstraction(self):
+        self.doSubtraction = True
+        self.doDivison = False
+
+    def setDivision(self):
+        self.doDivison = True
+        self.doSubtraction = False
