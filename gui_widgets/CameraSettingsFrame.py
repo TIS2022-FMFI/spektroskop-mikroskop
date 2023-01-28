@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import ttk
+import cv2
 from gui_widgets.FrameBaseClass import FrameBaseClass
 
 
@@ -31,7 +32,7 @@ class CameraSettingsFrame(FrameBaseClass):
         self.setCameraLinesButton.configure(command=lambda: self.getLines())
 
         self.setCameraCamerasButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH, "Set")
-        self.setCameraCamerasButton.configure(command=lambda: self.FUNCTION_TODO("ARGUMENT"))
+        self.setCameraCamerasButton.configure(command=lambda: self.setCameras())
 
         self.setExposureTimeButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH, "Set")
         self.setExposureTimeButton.configure(command=lambda: self.getExposureTime())
@@ -46,10 +47,12 @@ class CameraSettingsFrame(FrameBaseClass):
 
 
         # Comboboxes
-        # test vals
-        vals = ["1", "2", "3"]
-        self.liveCameraComboBox = ttk.Combobox(self, values=vals, width=15)
-        self.spectroscopeCameraComboBox = ttk.Combobox(self, values=vals, width=15)
+        self.liveCameraVAR = StringVar()
+        self.liveCameraComboBox = ttk.Combobox(self, width=15,state='readonly',postcommand=self.fillLiveCameraIds,textvariable=self.liveCameraVAR)
+
+        self.spectroscopeCameraVAR = StringVar()
+        self.spectroscopeCameraComboBox = ttk.Combobox(self, width=15,state='readonly',postcommand=self.fillLiveCameraIds,textvariable=self.spectroscopeCameraVAR)
+
 
         # Images
         self.connectionSignalImage = Label(self, image=self.OFF_IMAGE, bg=self.FRAME_COLOR)
@@ -108,5 +111,28 @@ class CameraSettingsFrame(FrameBaseClass):
     def initPlot(self, plot):
         self.plot = plot
 
+    def fillLiveCameraIds(self):
+        self.liveCameraComboBox.bind("<<ComboboxSelected>>",lambda e: self.focus())
+        self.liveCameraComboBox['values'] = self.getCameraIDS()
 
+    def fillSpectroscopeCameraIds(self):
+        self.spectroscopeCameraComboBox.bind("<<ComboboxSelected>>", lambda e: self.focus())
+        self.spectroscopeCameraComboBox['values'] = self.getCameraIDS()
 
+    def getCameraIDS(self):
+        cameras = []
+        for i in range(10):
+            cap = cv2.VideoCapture(i)
+            if cap.isOpened():
+                cameras.append(i)
+                cap.release()
+            else:
+                cap.release()
+                break
+        return cameras
+
+    def setCameras(self):
+        idSpec = self.spectroscopeCameraVAR.get()
+        idLive = self.liveCameraVAR.get()
+        if idSpec != "":
+            self.plot.camera = cv2.VideoCapture(int(idSpec))
