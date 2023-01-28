@@ -15,10 +15,11 @@ class Calibration:
     def initPlot(self, plot):
         self.plot = plot
 
+    def __str__(self):
+        return "".join([str(self.pixels[i]) + "    " + str(self.nm[i]) + '\n' for i in range(len(self.pixels))])
+
     def chooseFile(self):
-        self.filepath = askopenfilename(
-            filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")]
-        )
+        self.filepath = askopenfilename(filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")])
         if self.filepath == "":
             self.filepath = None
 
@@ -26,8 +27,7 @@ class Calibration:
         file = asksaveasfile(mode='w', defaultextension=".txt")
         if file is None:
             return
-        for i in range(len(self.pixels)):
-            file.write(str(self.pixels[i]) + "    " + str(self.nm[i]) + '\n')
+        file.write(self.__str__())
         file.close()
 
     def pushArrays(self, file):
@@ -47,7 +47,9 @@ class Calibration:
         self.nm = []
         for line in file.split('\n'):
             elem = line.split()
-            if len(elem) != 2 or not elem[0].isnumeric() or not elem[1].isnumeric():
+            if len(elem) != 2:
+                continue
+            if not elem[0].replace('.', '').isnumeric() or not elem[1].replace('.', '').isnumeric():
                 return False
             self.pixels.append(float(elem[0]))
             self.nm.append(float(elem[1]))
