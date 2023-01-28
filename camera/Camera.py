@@ -3,6 +3,7 @@ import tkinter as tk
 from PIL import Image, ImageTk
 import cv2
 
+
 class Camera:
     def __init__(self, cameraId=0):
         self.cameraHieght = 720
@@ -14,7 +15,6 @@ class Camera:
         self.cameraId = cameraId
         self.zoom = 1.0
         self.angle = 0.0
-        self.chanel = 'a'
         self.isCapturing = True
         self.rootCanvas = None
         self.label = None
@@ -26,6 +26,8 @@ class Camera:
         self.drawBottomLine = self.cameraHieght // 2 + 1
 
         self.plot = None
+
+        self.lastFrame = None
 
     def handleMauseClick(self, event):
         print("Mouse clicked at x:", event.x, "y:", event.y)
@@ -56,11 +58,12 @@ class Camera:
 
         self.myCanvas.config(scrollregion=(0, 0, 0, self.cameraHieght))
 
-
     def get_frame(self):
         while self.isCapturing:
             _, frame = self.camera.read()
             yield frame
+        else:
+            yield self.lastFrame
 
     def showImage(self, frame):
         if self.drawTopLine:
@@ -82,6 +85,7 @@ class Camera:
         self.isCapturing = True
 
     def pause(self):
+        self.lastFrame = self.get_frame().__next__()
         self.isCapturing = False
         self.release()
 
@@ -90,9 +94,6 @@ class Camera:
 
     def setExposureTime(self, exposureTime):
         self.camera.set(cv2.CAP_PROP_EXPOSURE, int(exposureTime))
-
-    def setColorChanel(self, chanel):
-        self.chanel = chanel
 
     def getCameraHeight(self):
         return self.cameraHieght
