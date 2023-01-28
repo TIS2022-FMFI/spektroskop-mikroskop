@@ -1,6 +1,7 @@
 from tkinter import *
 from gui_widgets.FrameBaseClass import FrameBaseClass
 
+
 # TODO FUNKCIONALITA CHECKUBUTTON/RADIOBUTTONS
 
 
@@ -64,7 +65,7 @@ class GraphFunctionFrame(FrameBaseClass):
                                                  variable=self.globalPeakVar, command=lambda: self.FUNCTION_TODO("XDD"))
 
         # Radiobutton values/state
-        self.scaleVar = IntVar()
+        self.scaleVar = IntVar(value=1)
 
         # Pouzivam IntVar lebo automaticky sa updatuje
         # Na ziskania value pouzi  self.scaleVar.get() . Values = 1 alebo 2. 1 = px , 2 = nm
@@ -73,6 +74,20 @@ class GraphFunctionFrame(FrameBaseClass):
                                    variable=self.scaleVar, value=1, command=lambda: self.setPixelView())
         self.radioNm = Radiobutton(self, text="nm", bg=self.FRAME_COLOR, activebackground=self.FRAME_COLOR,
                                    variable=self.scaleVar, value=2, command=lambda: self.setWavelentgthView())
+
+        self.redVar = IntVar()
+        self.checkRed = Checkbutton(self, text="red", bg=self.FRAME_COLOR, activebackground=self.FRAME_COLOR,
+                                    variable=self.redVar, onvalue=1, offvalue=0, command=lambda: self.setShowRedLine())
+        self.greenVar = IntVar()
+        self.checkGreen = Checkbutton(self, text="green", bg=self.FRAME_COLOR, activebackground=self.FRAME_COLOR,
+                                      variable=self.greenVar, onvalue=1, offvalue=0,
+                                      command=lambda: self.setShowGreenLine())
+        self.blueVar = IntVar()
+        self.checkBlue = Checkbutton(self, text="blue", bg=self.FRAME_COLOR, activebackground=self.FRAME_COLOR,
+                                     variable=self.blueVar, onvalue=1, offvalue=0, command=lambda: self.setShowBlueLine())
+        self.maxVar = IntVar(value=1)
+        self.checkMax = Checkbutton(self, text="max", bg=self.FRAME_COLOR, activebackground=self.FRAME_COLOR,
+                                    variable=self.maxVar, onvalue=1, offvalue=0, command=lambda: self.setShowMaxLine())
 
         # Placing widgets into frame
         self.placeWidgets()
@@ -113,6 +128,11 @@ class GraphFunctionFrame(FrameBaseClass):
         self.radioPx.grid(row=11, column=1, pady=(10, 0))
         self.radioNm.grid(row=11, column=2, pady=(10, 0))
 
+        self.checkRed.grid(row=12, column=0)
+        self.checkGreen.grid(row=12, column=1)
+        self.checkBlue.grid(row=12, column=2)
+        self.checkMax.grid(row=12, column=3)
+
     def initPlot(self, plot):
         self.plot = plot
 
@@ -133,3 +153,15 @@ class GraphFunctionFrame(FrameBaseClass):
 
     def setWavelentgthView(self):
         self.plot.showWavelengthView()
+
+    def setShowRedLine(self):
+        self.plot.setShowRedLine(self.redVar.get())
+
+    def setShowGreenLine(self):
+        self.plot.setShowGreenLine(self.greenVar.get())
+
+    def setShowBlueLine(self):
+        self.plot.setShowBlueLine(self.blueVar.get())
+
+    def setShowMaxLine(self):
+        self.plot.setShowMaxLine(self.maxVar.get())

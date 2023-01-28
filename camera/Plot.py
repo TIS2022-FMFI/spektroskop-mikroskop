@@ -11,12 +11,11 @@ from matplotlib.animation import FuncAnimation
 
 class Plot:
     def __init__(self, canvas, camera=Camera(1)):
+        plt.style.use('ggplot')
         self.fig, self.ax = plt.subplots()
         self.camera = camera
         self.t = None
         self.isPaused = False
-        self.ax.set_facecolor('gainsboro')
-        self.ax.grid(color="white")
         self.canvas = FigureCanvasTkAgg(self.fig, master=canvas)
         self.ani = None
         self.cameraCanvas = None
@@ -38,45 +37,71 @@ class Plot:
 
         self.referenceData = None
 
-    def update_plot(self, frame, line):
+        self.showRedLine = False
+        self.showGreenLine = False
+        self.showBlueLine = False
+        self.showMaxLine = True
+
+    # TODO extrahovat duplicity do metody?
+    def updatePlot(self, frame):
         # get the red color values of the first line of the frame
         self.camera.showImage(frame)
 
-        if self.camera.chanel == 'r':
-            '''number 2 is for second index in GBR frame'''
+        self.ax.clear()
+        self.ax.use_sticky_edges = True
+        self.ax.margins(x=0)
+
+        if self.showRedLine:
             redLine = self.getRedLine(frame)
-            line.set_data(range(len(redLine)), redLine)
-            line.set_color("red")
+            colorLine = "red"
 
-        if self.camera.chanel == 'g':
-            '''number 0 is for zeroth index in GBR frame'''
-            greenLine = self.getGreenLine(frame)
-            line.set_data(range(len(greenLine)), greenLine)
-            line.set_color("green")
-
-        if self.camera.chanel == 'b':
-            '''number 2 is for first index in GBR frame'''
-            blueLine = self.getBlueLine(frame)
-            line.set_data(range(len(blueLine)), blueLine)
-            line.set_color("blue")
-
-        if self.camera.chanel == 'a':
-            '''a is for max value from GBR colours'''
-            maxValue = self.getMaxLine(frame)
             if self.doSubtraction:
-                subtractedLine = np.subtract(maxValue, self.referenceData).astype(np.int8)
-                self.ax.set_ylim([min(subtractedLine), max(subtractedLine)])
-                line.set_data(range(len(subtractedLine)), subtractedLine)
+                subtractedLine = self.subtractActualFromReference(redLine)
+                self.ax.plot(subtractedLine, color=colorLine)
             elif self.doDivison:
-                dividedLine = np.divide(maxValue, self.referenceData)
-                """ replace Inf and NaN values with 1"""
-                np.place(dividedLine, np.isinf(dividedLine) | np.isnan(dividedLine), 1)
-                self.ax.set_ylim([min(dividedLine), max(dividedLine)])
-                line.set_data(range(len(dividedLine)), dividedLine)
+                dividedLine = self.divideActualFromReference(redLine)
+                self.ax.plot(dividedLine, color=colorLine)
             else:
-                line.set_data(range(len(maxValue)), maxValue)
-                self.ax.set_ylim([min(maxValue), max(maxValue)])
-                line.set_color("black")
+                self.ax.plot(redLine, color=colorLine)
+
+        if self.showGreenLine:
+            greenLine = self.getGreenLine(frame)
+            colorLine = "green"
+
+            if self.doSubtraction:
+                subtractedLine = self.subtractActualFromReference(greenLine)
+                self.ax.plot(subtractedLine, color=colorLine)
+            elif self.doDivison:
+                dividedLine = self.divideActualFromReference(greenLine)
+                self.ax.plot(dividedLine, color=colorLine)
+            else:
+                self.ax.plot(greenLine, color=colorLine)
+
+        if self.showBlueLine:
+            blueLine = self.getBlueLine(frame)
+            colorLine = "blue"
+
+            if self.doSubtraction:
+                subtractedLine = self.subtractActualFromReference(blueLine)
+                self.ax.plot(subtractedLine, color=colorLine)
+            elif self.doDivison:
+                dividedLine = self.divideActualFromReference(blueLine)
+                self.ax.plot(dividedLine, color=colorLine)
+            else:
+                self.ax.plot(blueLine, color=colorLine)
+
+        if self.showMaxLine:
+            maxValue = self.getMaxLine(frame)
+            colorLine = "black"
+
+            if self.doSubtraction:
+                subtractedLine = self.subtractActualFromReference(maxValue)
+                self.ax.plot(subtractedLine, color=colorLine)
+            elif self.doDivison:
+                dividedLine = self.divideActualFromReference(maxValue)
+                self.ax.plot(dividedLine, color=colorLine)
+            else:
+                self.ax.plot(maxValue, color=colorLine)
 
     def avgLines(self, frame, lineFrom, lineTo, color=2):
         if lineFrom == lineTo:
@@ -89,16 +114,19 @@ class Plot:
         return line
 
     def show_plot(self):
-        frame = self.camera.get_frame().__next__()
-        red = frame[0, :, 2]
-
-        self.ax.set_xlim([0, self.camera.getCameraWidht()])
-        self.ax.set_ylim([0, 300])
-        line, = self.ax.plot(red)
-        self.ani = FuncAnimation(self.fig, self.update_plot, fargs=(line,), frames=self.camera.get_frame(), interval=100)
+        self.ani = FuncAnimation(self.fig, self.updatePlot, frames=self.camera.get_frame(), interval=10)
         self.start()
         self.canvas.draw()
         self.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+
+    def subtractActualFromReference(self, actual):
+        return np.subtract(actual, self.referenceData).astype(np.int8)
+
+    def divideActualFromReference(self, actual):
+        dividedLine = np.divide(actual, self.referenceData)
+        """ replace Inf and NaN values with 1"""
+        np.place(dividedLine, np.isinf(dividedLine) | np.isnan(dividedLine), 1)
+        return dividedLine
 
     def showPixelView(self):
         self.ax.set_xlim([0, self.camera.getCameraWidht()])
@@ -181,3 +209,26 @@ class Plot:
         self.doDivison = True
         self.doSubtraction = False
 
+    def setShowRedLine(self, value):
+        if value == 1:
+            self.showRedLine = True
+        else:
+            self.showRedLine = False
+
+    def setShowGreenLine(self, value):
+        if value == 1:
+            self.showGreenLine = True
+        else:
+            self.showGreenLine = False
+
+    def setShowBlueLine(self, value):
+        if value == 1:
+            self.showBlueLine = True
+        else:
+            self.showBlueLine = False
+
+    def setShowMaxLine(self, value):
+        if value == 1:
+            self.showMaxLine = True
+        else:
+            self.showMaxLine = False
