@@ -1,4 +1,4 @@
-from tkinter.filedialog import askopenfilename
+from tkinter.filedialog import askopenfilename, asksaveasfile
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -14,12 +14,21 @@ class Calibration:
 
     def initPlot(self, plot):
         self.plot = plot
+
     def chooseFile(self):
         self.filepath = askopenfilename(
             filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")]
         )
         if self.filepath == "":
             self.filepath = None
+
+    def saveFile(self):
+        file = asksaveasfile(mode='w', defaultextension=".txt")
+        if file is None:
+            return
+        for i in range(len(self.pixels)):
+            file.write(str(self.pixels[i]) + "    " + str(self.nm[i]) + '\n')
+        file.close()
 
     def pushArrays(self, file):
         self.pixels = [float(line.split()[0]) for line in file]
@@ -47,7 +56,6 @@ class Calibration:
     def calculateModel(self, polynomDegree=3):
         self.model = np.poly1d(np.polyfit(self.pixels, self.nm, polynomDegree))
         self.plot.initModel(self.model)
-
 
     def getModel(self):
         return self.model
