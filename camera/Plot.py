@@ -13,8 +13,11 @@ class Plot:
     def __init__(self, canvas, camera=Camera(1)):
         plt.style.use('ggplot')
         self.fig, self.ax = plt.subplots()
+        self.xLimValues = range(0, 1280)
+
         self.camera = camera
         self.t = None
+        self.t2 = None
         self.isPaused = False
         self.canvas = FigureCanvasTkAgg(self.fig, master=canvas)
         self.ani = None
@@ -45,8 +48,8 @@ class Plot:
     # TODO extrahovat duplicity do metody?
     def updatePlot(self, frame):
         # get the red color values of the first line of the frame
+        # self.startT2(frame)
         self.camera.showImage(frame)
-
         self.ax.clear()
         self.ax.use_sticky_edges = True
         self.ax.margins(x=0)
@@ -57,12 +60,12 @@ class Plot:
 
             if self.doSubtraction:
                 subtractedLine = self.subtractActualFromReference(redLine)
-                self.ax.plot(subtractedLine, color=colorLine)
+                self.ax.plot(self.xLimValues, subtractedLine, color=colorLine)
             elif self.doDivison:
                 dividedLine = self.divideActualFromReference(redLine)
-                self.ax.plot(dividedLine, color=colorLine)
+                self.ax.plot(self.xLimValues, dividedLine, color=colorLine)
             else:
-                self.ax.plot(redLine, color=colorLine)
+                self.ax.plot(self.xLimValues, redLine, color=colorLine)
 
         if self.showGreenLine:
             greenLine = self.getGreenLine(frame)
@@ -70,12 +73,12 @@ class Plot:
 
             if self.doSubtraction:
                 subtractedLine = self.subtractActualFromReference(greenLine)
-                self.ax.plot(subtractedLine, color=colorLine)
+                self.ax.plot(self.xLimValues, subtractedLine, color=colorLine)
             elif self.doDivison:
                 dividedLine = self.divideActualFromReference(greenLine)
-                self.ax.plot(dividedLine, color=colorLine)
+                self.ax.plot(self.xLimValues, dividedLine, color=colorLine)
             else:
-                self.ax.plot(greenLine, color=colorLine)
+                self.ax.plot(self.xLimValues, greenLine, color=colorLine)
 
         if self.showBlueLine:
             blueLine = self.getBlueLine(frame)
@@ -83,12 +86,12 @@ class Plot:
 
             if self.doSubtraction:
                 subtractedLine = self.subtractActualFromReference(blueLine)
-                self.ax.plot(subtractedLine, color=colorLine)
+                self.ax.plot(self.xLimValues, subtractedLine, color=colorLine)
             elif self.doDivison:
                 dividedLine = self.divideActualFromReference(blueLine)
-                self.ax.plot(dividedLine, color=colorLine)
+                self.ax.plot(self.xLimValues, dividedLine, color=colorLine)
             else:
-                self.ax.plot(blueLine, color=colorLine)
+                self.ax.plot(self.xLimValues, blueLine, color=colorLine)
 
         if self.showMaxLine:
             maxValue = self.getMaxLine(frame)
@@ -96,12 +99,12 @@ class Plot:
 
             if self.doSubtraction:
                 subtractedLine = self.subtractActualFromReference(maxValue)
-                self.ax.plot(subtractedLine, color=colorLine)
+                self.ax.plot(self.xLimValues, subtractedLine, color=colorLine)
             elif self.doDivison:
                 dividedLine = self.divideActualFromReference(maxValue)
-                self.ax.plot(dividedLine, color=colorLine)
+                self.ax.plot(self.xLimValues, dividedLine, color=colorLine)
             else:
-                self.ax.plot(maxValue, color=colorLine)
+                self.ax.plot(self.xLimValues, maxValue, color=colorLine)
 
     def avgLines(self, frame, lineFrom, lineTo, color=2):
         if lineFrom == lineTo:
@@ -114,9 +117,10 @@ class Plot:
         return line
 
     def show_plot(self):
-        self.ani = FuncAnimation(self.fig, self.updatePlot, frames=self.camera.get_frame(), interval=10)
+        # self.startT2(self.camera.get_frame().__next__())
+        self.ani = FuncAnimation(self.fig, self.updatePlot, frames=self.camera.get_frame(), interval=100)
         self.start()
-        self.canvas.draw()
+        # self.canvas.draw()
         self.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
 
     def subtractActualFromReference(self, actual):
@@ -129,15 +133,20 @@ class Plot:
         return dividedLine
 
     def showPixelView(self):
-        self.ax.set_xlim([0, self.camera.getCameraWidht()])
+        self.xLimValues = range(0, 1280)
+        # self.ax.set_xlim([0, self.camera.getCameraWidht()])
 
     def showWavelengthView(self):
         if self.model:
-            self.ax.set_xlim(self.model([0, 1280]))
+            self.xLimValues = self.model(self.xLimValues)
 
     def start(self):
         self.t = Thread(target=self.canvas.draw())
         self.t.start()
+
+    def startT2(self, initFrame):
+        self.t2 = Thread(target=self.camera.showImage(initFrame))
+        self.t2.start()
 
     def pause(self):
         self.ani.event_source.stop()
