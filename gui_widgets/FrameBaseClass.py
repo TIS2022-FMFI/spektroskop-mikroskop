@@ -20,10 +20,11 @@ class FrameBaseClass(Frame):
         self.BUTTON_SIZE_WIDTH = 80
 
         self.SPECTROMETER_FRAME_WIDTH = self.winfo_screenwidth() * 0.9
-        self.SPECTROMETER_FRAME_HEIGHT = 100
+        self.SPECTROMETER_FRAME_HEIGHT = 200
 
         self.GRAPH_FRAME_WIDTH = self.winfo_screenwidth() * 0.9
-        self.GRAPH_FRAME_HEIGHT = 500
+        """ 300 is for spectrometer frame height plus motor control frame plus some padding"""
+        self.GRAPH_FRAME_HEIGHT = (self.winfo_screenheight() * 0.9) - 400
 
         self.IMAGE_TRICK = PhotoImage(width=1, height=1)  # Used for a trick that lets you enable button sizes by px
 
@@ -44,6 +45,9 @@ class FrameBaseClass(Frame):
 
     def initializeEntry(self, w):
         return Entry(self, width=w)
+
+    def initializeScale(self, w):
+        return Scale(self, width=w, orient=HORIZONTAL, name="exposure time", from_=0, to=-13)
 
     def removeWidgetsFromFrame(self):
         for widgets in self.winfo_children():

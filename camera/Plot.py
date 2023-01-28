@@ -15,10 +15,15 @@ class Plot:
         self.camera = camera
         self.t = None
         self.isPaused = False
+        self.ax.set_facecolor('gainsboro')
+        self.ax.grid(color="white")
         self.canvas = FigureCanvasTkAgg(self.fig, master=canvas)
         self.ani = None
         self.cameraCanvas = None
         self.label = None
+        self.slider = -5
+
+        self.camera.initPlot(self)
 
         self.showWavelengt = False
         self.model = None
@@ -64,10 +69,13 @@ class Plot:
                 line.set_data(range(len(subtractedLine)), subtractedLine)
             elif self.doDivison:
                 dividedLine = np.divide(maxValue, self.referenceData)
+                """ replace Inf and NaN values with 1"""
+                np.place(dividedLine, np.isinf(dividedLine) | np.isnan(dividedLine), 1)
                 self.ax.set_ylim([min(dividedLine), max(dividedLine)])
                 line.set_data(range(len(dividedLine)), dividedLine)
             else:
                 line.set_data(range(len(maxValue)), maxValue)
+                self.ax.set_ylim([min(maxValue), max(maxValue)])
                 line.set_color("black")
 
     def avgLines(self, frame, lineFrom, lineTo, color=2):
@@ -123,6 +131,9 @@ class Plot:
         self.label = Label(self.cameraCanvas)
         self.label.pack()
 
+    def initExposureTimeSlider(self, slider):
+        self.slider = slider
+
     def getRedLine(self, frame):
         return self.avgLines(frame, self.lineFrom, self.lineTo, 2)
 
@@ -146,15 +157,20 @@ class Plot:
         """set lines range with chack to bounds"""
         if (extraLines is None) or (extraLines == 0):
             self.lineFrom = self.lineTo = self.mainLine
+            self.camera.setExtraLines(self.mainLine, 0)
         else:
             self.lineFrom = max(self.mainLine - extraLines, 0)
             self.lineTo = min(self.mainLine + extraLines, self.camera.getCameraHeight())
+            self.camera.setExtraLines(self.mainLine, extraLines)
 
     def setExposureTimeForCamera(self, exposureTieme):
         self.camera.setExposureTime(exposureTieme)
 
     def setReferenceData(self):
         self.referenceData = self.getMaxLine(self.camera.get_frame().__next__())
+        """change value of 0 in reference data with 1
+            for reason of dividing by 0 """
+        # self.referenceData = np.where(self.referenceData == 0, 1, self.referenceData)
         print(self.referenceData)
 
     def setSubstraction(self):

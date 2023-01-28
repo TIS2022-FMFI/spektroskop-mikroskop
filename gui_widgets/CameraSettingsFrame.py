@@ -25,6 +25,7 @@ class CameraSettingsFrame(FrameBaseClass):
         self.exposureTimeLabel = self.initializeLabel("Exposure time:", 0)
         self.connectionLabel = self.initializeLabel("Connection:", 0)
 
+
         # Buttons
         self.setCameraLinesButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH, "Set")
         self.setCameraLinesButton.configure(command=lambda: self.getLines())
@@ -39,7 +40,10 @@ class CameraSettingsFrame(FrameBaseClass):
         self.lineEntry = self.initializeEntry(15)
         self.extraLinesEntry = self.initializeEntry(15)
         self.averageEntry = self.initializeEntry(15)
-        self.exposureTimeEntry = self.initializeEntry(15)
+        # self.exposureTimeEntry = self.initializeEntry(15)
+
+        self.exposureTimeSlider = self.initializeScale(13)
+
 
         # Comboboxes
         # test vals
@@ -75,27 +79,31 @@ class CameraSettingsFrame(FrameBaseClass):
         self.setCameraCamerasButton.grid(sticky=E, row=7, column=0, pady=(10, 0))
 
         self.exposureTimeLabel.grid(sticky=W, row=9, column=0, pady=(10, 0))
-        self.exposureTimeEntry.grid(row=9, column=1, pady=(10, 0), padx=(0, 10))
+        # self.exposureTimeEntry.grid(row=9, column=1, pady=(10, 0), padx=(0, 10))
+        self.exposureTimeSlider.grid(row=10, columnspan=2, sticky=W+E, pady=(10, 10))
 
-        self.setExposureTimeButton.grid(sticky=E, row=10, column=0, pady=(10, 10))
-        self.connectionLabel.grid(sticky=W, row=11, column=0, pady=(10, 10))
-        self.connectionSignalImage.grid(row=11, column=0, pady=(10, 10), padx=(30, 0))
+        self.setExposureTimeButton.grid(sticky=E, row=11, column=0, pady=(10, 10))
+        self.connectionLabel.grid(sticky=W, row=12, column=0, pady=(10, 10))
+        self.connectionSignalImage.grid(row=12, column=0, pady=(10, 10), padx=(30, 0))
 
     def getMainLine(self):
-        self.plot.setMainLine(int(self.lineEntry.get()))
+        try:
+            self.plot.setMainLine(int(self.lineEntry.get()))
+        except ValueError:
+            pass
 
     def getExtraLines(self):
         try:
             self.plot.setExtraLines(int(self.extraLinesEntry.get()))
         except ValueError:
-            pass
+            self.plot.setExtraLines(0)
 
     def getLines(self):
         self.getMainLine()
         self.getExtraLines()
 
     def getExposureTime(self):
-        self.plot.setExposureTimeForCamera(self.exposureTimeEntry.get())
+        self.plot.setExposureTimeForCamera(self.exposureTimeSlider.get())
 
     def initPlot(self, plot):
         self.plot = plot
