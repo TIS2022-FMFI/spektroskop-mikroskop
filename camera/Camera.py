@@ -37,11 +37,15 @@ class Camera:
         self.plot.setExtraLines(self.extraLines)
         self.setExtraLines(int(mainLine), self.extraLines)
 
+    def handleScrollEvent(self, event):
+        self.myCanvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
+
     def initCanvas(self, canvas):
         self.rootCanvas = canvas
 
         self.myCanvas = tk.Canvas(self.rootCanvas)
         self.myCanvas.bind("<Button-1>", self.handleMauseClick)
+        self.myCanvas.bind_all("<MouseWheel>", self.handleScrollEvent)
 
         self.myCanvas.pack(fill='both', expand=True)
 
