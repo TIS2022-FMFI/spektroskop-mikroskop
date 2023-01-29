@@ -13,7 +13,8 @@ class GraphImageFrame(FrameBaseClass):
         # self.placeWidgets()
 
     def placeWidgets(self):
-        self.plot.show_plot()
+        ...
+        # self.plot.show_plot()
 
     def initPlot(self, plot):
         self.plot = plot

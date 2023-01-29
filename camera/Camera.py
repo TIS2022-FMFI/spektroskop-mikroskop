@@ -5,7 +5,7 @@ import cv2
 
 
 class Camera:
-    def __init__(self, cameraId=0):
+    def __init__(self, cameraId=0, plot=None):
         self.cameraHieght = 720
         self.cameraWidth = 1200
 
@@ -25,7 +25,7 @@ class Camera:
         self.drawTopLine = self.cameraHieght // 2 - 1
         self.drawBottomLine = self.cameraHieght // 2 + 1
 
-        self.plot = None
+        self.plot = plot
 
         self.lastFrame = None
 
@@ -90,6 +90,7 @@ class Camera:
         self.release()
 
     def release(self):
+        self.myCanvas.destroy()
         self.camera.release()
 
     def setExposureTime(self, exposureTime):
