@@ -161,11 +161,12 @@ class CameraSettingsFrame(FrameBaseClass):
             if self.liveCamera is None:
                 self.liveCamera = Camera(int(idLive))
                 self.liveCameraFrame.initCamera(self.liveCamera)
-                self.liveCameraFrame.update_frame()
+                self.liveCameraFrame.start()
             else:
                 self.liveCamera.release()
                 self.liveCamera = Camera(int(idLive))
+                self.liveCameraFrame.release()
                 self.liveCameraFrame.initCamera(self.liveCamera)
-                self.liveCameraFrame.update_frame()
+                self.liveCameraFrame.start()
 
 
