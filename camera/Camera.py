@@ -30,7 +30,7 @@ class Camera:
         self.lastFrame = None
 
     def handleMauseClick(self, event):
-        print("Mouse clicked at x:", event.x, "y:", event.y)
+        # print("Mouse clicked at x:", event.x, "y:", event.y)
         scroll_pos = self.scrollbar.get()
         mainLine = event.y + (scroll_pos[0] * self.cameraHieght)
         self.plot.setMainLine(int(mainLine))
@@ -45,7 +45,7 @@ class Camera:
 
         self.myCanvas = tk.Canvas(self.rootCanvas)
         self.myCanvas.bind("<Button-1>", self.handleMauseClick)
-        self.myCanvas.bind_all("<MouseWheel>", self.handleScrollEvent)
+        self.myCanvas.bind("<MouseWheel>", self.handleScrollEvent)
 
         self.myCanvas.pack(fill='both', expand=True)
 
