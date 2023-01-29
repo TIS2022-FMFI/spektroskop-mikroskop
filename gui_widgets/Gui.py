@@ -12,6 +12,7 @@ from gui_widgets.ImportExportFrame import ImportExportFrame
 from gui_widgets.MotorControlFrame import MotorControlFrame
 from gui_widgets.NavbarFrame import NavbarFrame
 from gui_widgets.SpectroImageFrame import SpectroImageFrame
+from gui_widgets.LiveCameraWindow import LiveCameraWindow
 
 
 class GUI(Tk):
@@ -27,7 +28,10 @@ class GUI(Tk):
         # self.geometry(f"{self.MASTER_WIDTH}x{self.MASTER_HEIGHT}")
 
         # Initializing window for camera feed
-        self.cameraFeedTopLevel = Toplevel()
+
+        #TODO zakomentovane kvoli tomu "iba jeden frame"
+        # self.camera2 = Camera(0)
+        # self.LiveCameraWindow = LiveCameraWindow(camera=self.camera2,parent=self)
 
         '''frame for camera image'''
         self.spectroImageFrame = SpectroImageFrame()
