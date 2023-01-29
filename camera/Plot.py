@@ -1,3 +1,4 @@
+from threading import Thread
 import tkinter as tk
 from threading import Thread
 from tkinter import *
@@ -27,13 +28,14 @@ class Plot:
         self.label = None
         self.slider = -5
 
-        self.camera.initPlot(self)
+        # self.camera.initPlot(self)
 
         self.showWavelengt = False
         self.model = None
 
         '''sets defoult capturing line to be middle of comarea capture'''
-        self.mainLine = self.camera.getCameraHeight() // 2
+        # self.mainLine = self.camera.getCameraHeight() // 2
+        self.mainLine = 100
         self.lineFrom = None
         self.lineTo = None
 
@@ -138,8 +140,12 @@ class Plot:
         self.camera.pause()
 
     def resume(self):
-        self.ani.event_source.start()
-        self.camera.start()
+        if not self.isPaused:
+            self.show_plot()
+            self.camera.start()
+        else:
+            self.ani.event_source.start()
+            self.camera.start()
 
     def release(self):
         self.camera.release()
