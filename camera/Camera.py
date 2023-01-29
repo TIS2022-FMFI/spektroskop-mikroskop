@@ -21,7 +21,7 @@ class Camera:
         self.scrollbar = None
         self.myCanvas = None
 
-        self.extraLines = 1
+        self.extraLines = 0
         self.drawTopLine = self.cameraHieght // 2 - 1
         self.drawBottomLine = self.cameraHieght // 2 + 1
 
