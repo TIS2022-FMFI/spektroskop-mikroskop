@@ -3,7 +3,7 @@ from PIL import Image,ImageTk
 import cv2
 
 class LiveCameraWindow(Frame):
-    def __init__(self,camera,parent):
+    def __init__(self, camera, parent):
         self.camera = camera
         self.window = Toplevel(parent)
         self.lmain = Label(self.window)
@@ -12,7 +12,7 @@ class LiveCameraWindow(Frame):
         self.test_frame = None
         frame = Frame.__init__(self, parent)
 
-        self.update_frame()
+        # self.update_frame()
         # self.show_frame()
 
     def show_frame(self):
@@ -31,3 +31,6 @@ class LiveCameraWindow(Frame):
             self.img = Image.fromarray(frame)
             self.show_frame()
             self.lmain.after(10, self.update_frame)
+
+    def initCamera(self, camera):
+        self.camera = camera

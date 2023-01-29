@@ -1,15 +1,21 @@
 from tkinter import *
 from tkinter import ttk
 import cv2
+
+from camera.Camera import Camera
 from gui_widgets.FrameBaseClass import FrameBaseClass
 
 
 # TODO LOGIKA PRI ZMENE CONNECTION OBRAZKA
 class CameraSettingsFrame(FrameBaseClass):
-    def __init__(self):
+    def __init__(self, plot=None, spectroImageFrame=None, liveCameraFrame=None, spectroCamera=None, liveCamera=None):
         super().__init__()
 
-        self.plot = None
+        self.plot = plot
+        self.spectroImageFrame = spectroImageFrame
+        self.liveCameraFrame = liveCameraFrame
+        self.spectroCamera = spectroCamera
+        self.liveCamera = liveCamera
 
         # Setting color of frame
         self.configure(bg=self.FRAME_COLOR)
@@ -48,10 +54,12 @@ class CameraSettingsFrame(FrameBaseClass):
 
         # Comboboxes
         self.liveCameraVAR = StringVar()
-        self.liveCameraComboBox = ttk.Combobox(self, width=15,state='readonly',postcommand=self.fillLiveCameraIds,textvariable=self.liveCameraVAR)
+        self.liveCameraComboBox = ttk.Combobox(self, width=15, state='readonly', postcommand=self.fillLiveCameraIds,
+                                               textvariable=self.liveCameraVAR)
 
         self.spectroscopeCameraVAR = StringVar()
-        self.spectroscopeCameraComboBox = ttk.Combobox(self, width=15,state='readonly',postcommand=self.fillLiveCameraIds,textvariable=self.spectroscopeCameraVAR)
+        self.spectroscopeCameraComboBox = ttk.Combobox(self, width=15, state='readonly',
+                                                       postcommand=self.fillSpectroscopeCameraIds, textvariable=self.spectroscopeCameraVAR)
 
 
         # Images
@@ -135,4 +143,29 @@ class CameraSettingsFrame(FrameBaseClass):
         idSpec = self.spectroscopeCameraVAR.get()
         idLive = self.liveCameraVAR.get()
         if idSpec != "":
-            self.plot.camera = cv2.VideoCapture(int(idSpec))
+            if self.spectroCamera is not None:
+                self.plot.release()
+                spectroCamera = Camera(int(idSpec), self.plot)
+                self.plot.camera = spectroCamera
+                spectroCamera.initCanvas(self.spectroImageFrame)
+                self.spectroCamera = spectroCamera
+                self.plot.show_plot()
+            else:
+                spectroCamera = Camera(int(idSpec), self.plot)
+                self.plot.camera = spectroCamera
+                spectroCamera.initCanvas(self.spectroImageFrame)
+                self.spectroCamera = spectroCamera
+                self.plot.show_plot()
+
+        if idLive != "":
+            if self.liveCamera is None:
+                self.liveCamera = Camera(int(idLive))
+                self.liveCameraFrame.initCamera(self.liveCamera)
+                self.liveCameraFrame.update_frame()
+            else:
+                self.liveCamera.release()
+                self.liveCamera = Camera(int(idLive))
+                self.liveCameraFrame.initCamera(self.liveCamera)
+                self.liveCameraFrame.update_frame()
+
+

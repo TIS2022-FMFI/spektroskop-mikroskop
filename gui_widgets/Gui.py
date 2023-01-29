@@ -23,6 +23,8 @@ class GUI(Tk):
         # self.MASTER_HEIGHT = 750
 
         self.model = None
+        self.spectroCamera = None
+        self.liveCamera = None
 
         # Setting master window size
         # self.geometry(f"{self.MASTER_WIDTH}x{self.MASTER_HEIGHT}")
@@ -30,25 +32,24 @@ class GUI(Tk):
         # Initializing window for camera feed
 
         #TODO zakomentovane kvoli tomu "iba jeden frame"
-        # self.camera2 = Camera(0)
-        # self.LiveCameraWindow = LiveCameraWindow(camera=self.camera2,parent=self)
+        self.liveCameraWindow = LiveCameraWindow(camera=self.liveCamera, parent=self)
+        self.cameraFeedTopLevel = Toplevel()
 
         '''frame for camera image'''
         self.spectroImageFrame = SpectroImageFrame()
-        self.camera = Camera(0)
-        self.camera.initCanvas(self.spectroImageFrame)
-        self.spectroImageFrame.initCamera(self.camera)
+        # self.camera = Camera(0)
+        # self.camera.initCanvas(self.spectroImageFrame)
+        # self.spectroImageFrame.initCamera(self.camera)
         self.spectroImageFrame.placeWidgets()
 
         '''frame for live graph'''
         self.graphImageFrame = GraphImageFrame()
-        self.plot = Plot(self.graphImageFrame, self.camera)
-
-
+        self.plot = Plot(self.graphImageFrame, self.spectroCamera)
 
         self.motorControlsFrame = MotorControlFrame()
 
-        self.cameraSettingsFrame = CameraSettingsFrame()
+        self.cameraSettingsFrame = CameraSettingsFrame(spectroImageFrame=self.spectroImageFrame,
+                                                       liveCameraFrame=self.liveCameraWindow)
         self.calibrationFrame = CalibrationFrame(self.plot)
         self.d32Frame = D32Frame()
         self.graphFunctionFrame = GraphFunctionFrame()
