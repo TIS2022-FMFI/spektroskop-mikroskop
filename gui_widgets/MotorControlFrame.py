@@ -6,10 +6,10 @@ from gui_widgets.MotorController import MotorController
 # TODO SCROLLBAR ABY UPDATEOVAL LABEL
 class MotorControlFrame(FrameBaseClass):
 
-    def __init__(self):
+    def __init__(self, plot=None):
         super().__init__()
-
-        self.motorController = MotorController()
+        self.plot = plot
+        self.motorController = MotorController(self.plot)
 
         # Initializing widgets
 
@@ -26,6 +26,7 @@ class MotorControlFrame(FrameBaseClass):
 
         # Buttons
         self.backToStartButton = self.initializeButton(30, 50, "|<")
+
         self.backToStartButton.configure(command=lambda: self.motorController.moveX("l", self.motorController.X))
 
         self.stepBackButton = self.initializeButton(30, 50, "-")

@@ -78,3 +78,6 @@ class FrameUtilMethods:
             return dividedLine
         else:
             raise ValueError("Empty reference data")
+
+    def getCollumn(self, collumn):
+        return self.frame[100:110, collumn, :]

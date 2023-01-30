@@ -45,14 +45,14 @@ class GUI(Tk):
         self.graphImageFrame = GraphImageFrame()
         self.plot = Plot(self.graphImageFrame, self.spectroCamera)
 
-        self.motorControlsFrame = MotorControlFrame()
+        self.motorControlsFrame = MotorControlFrame(self.plot)
 
         self.cameraSettingsFrame = CameraSettingsFrame(spectroImageFrame=self.spectroImageFrame,
                                                        liveCameraFrame=self.liveCameraWindow)
         self.calibrationFrame = CalibrationFrame(self.plot)
         self.d32Frame = D32Frame()
         self.graphFunctionFrame = GraphFunctionFrame()
-        self.d3Frame = D3Frame()
+        self.d3Frame = D3Frame(self.motorControlsFrame)
         self.importExportFrame = ImportExportFrame()
 
         self.navbarFrame = NavbarFrame(self.cameraSettingsFrame, self.calibrationFrame, self.d32Frame,
