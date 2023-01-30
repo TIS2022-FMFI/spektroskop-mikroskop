@@ -33,7 +33,6 @@ class GUI(Tk):
 
         #TODO zakomentovane kvoli tomu "iba jeden frame"
         self.liveCameraWindow = LiveCameraWindow(camera=self.liveCamera, parent=self)
-        self.cameraFeedTopLevel = Toplevel()
 
         '''frame for camera image'''
         self.spectroImageFrame = SpectroImageFrame()
@@ -57,8 +56,7 @@ class GUI(Tk):
         self.importExportFrame = ImportExportFrame()
 
         self.navbarFrame = NavbarFrame(self.cameraSettingsFrame, self.calibrationFrame, self.d32Frame,
-                                       self.graphFunctionFrame, self.d3Frame, self.importExportFrame,
-                                       self.cameraFeedTopLevel)
+                                       self.graphFunctionFrame, self.d3Frame, self.importExportFrame)
         # Placing frame objects into the window
         self.navbarFrame.pack(side=LEFT, fill=Y)
         self.spectroImageFrame.pack(pady=(30, 0))
@@ -69,15 +67,18 @@ class GUI(Tk):
         self.initPlots()
         self.placeWidets()
 
+        # self.bind("<Destroy>", print("ahoj"))
+
+        self.protocol("WM_DELETE_WINDOW", self.onClose)
         self.mainloop()
-        self.plot.release()
-        self.quit()
+        # self.plot.release()
+        # self.quit()
 
-        self.release()
+        # self.release()
 
-    def release(self):
-        self.plot.release()
-        self.destroy()
+    # def release(self):
+    #     self.plot.release()
+    #     self.destroy()
 
     def initPlots(self):
         self.graphImageFrame.initPlot(self.plot)
@@ -88,4 +89,11 @@ class GUI(Tk):
     def placeWidets(self):
         self.graphImageFrame.placeWidgets()
 
+    def onClose(self):
+        self.plot.release()
 
+        if self.spectroCamera is not None:
+            self.spectroCamera.release()
+        if self.liveCamera is not None:
+            self.liveCamera.release()
+        self.destroy()

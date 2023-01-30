@@ -12,6 +12,6 @@ class Application:
 
 
 app = Application()
-app.gui.plot.release()
-app.gui.destroy()
+# app.gui.plot.release()
+# app.gui.destroy()
 # app.gui.graphImageFrame.placeGraph()
