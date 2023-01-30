@@ -114,7 +114,7 @@ class Plot:
 
     def show_plot(self):
         # self.startT2(self.camera.get_frame().__next__())
-        self.ani = FuncAnimation(self.fig, self.updatePlot, frames=self.camera.get_frame(), interval=1)
+        self.ani = FuncAnimation(self.fig, self.updatePlot, frames=self.camera.get_frame(), interval=100)
         self.start()
         # self.canvas.draw()
         self.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
@@ -148,6 +148,7 @@ class Plot:
             self.camera.start()
 
     def release(self):
+        self.ani.event_source.stop()
         self.camera.release()
         self.t.join()
 
