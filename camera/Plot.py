@@ -1,12 +1,14 @@
 from threading import Thread
 import tkinter as tk
+from threading import Thread
 from tkinter import *
+
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 from camera.Camera import Camera
-import matplotlib.pyplot as plt
-import numpy as np
-from matplotlib.animation import FuncAnimation
+from camera.FrameUtilMethods import FrameUtilMethods
 
 
 class Plot:
@@ -14,6 +16,7 @@ class Plot:
         plt.style.use('ggplot')
         self.fig, self.ax = plt.subplots()
         self.xLimValues = range(0, 1280)
+        self.fig.tight_layout()
 
         self.camera = camera
         self.t = None
@@ -46,6 +49,7 @@ class Plot:
         self.showBlueLine = False
         self.showMaxLine = True
 
+        self.frameUtils = FrameUtilMethods(lineFrom=self.lineFrom, lineTo=self.lineTo, mainLine=self.mainLine)
 
     # TODO extrahovat duplicity do metody?
     def updatePlot(self, frame):
@@ -56,67 +60,57 @@ class Plot:
         self.ax.use_sticky_edges = True
         self.ax.margins(x=0)
 
-        if self.showRedLine:
-            redLine = self.getRedLine(frame)
-            colorLine = "red"
+        self.frameUtils.setFrame(frame)
 
-            if self.doSubtraction:
-                subtractedLine = self.subtractActualFromReference(redLine)
-                self.ax.plot(self.xLimValues, subtractedLine, color=colorLine)
-            elif self.doDivison:
-                dividedLine = self.divideActualFromReference(redLine)
-                self.ax.plot(self.xLimValues, dividedLine, color=colorLine)
-            else:
-                self.ax.plot(self.xLimValues, redLine, color=colorLine)
+        if self.showRedLine:
+            redLine = self.frameUtils.getRedLine()
+            colorLine = "red"
+            self.performOperations(redLine, colorLine)
+
+            # TODO consult with Vojtek it has fuctionality for showing peaks
+
+            # red_peaks_indices, _ = find_peaks(redLine, distance=10)
+            # red_peaks_indices.astype(np.int8)
+            #
+            #
+            # for x, y in zip(red_peaks_indices, redLine[red_peaks_indices]):
+            #     # self.ax.plot(x, y, 'k', linestyle='dashed', linewidth=1, alpha=0.7)
+            #     self.ax.vlines(x=x, ymin=min(redLine), ymax=y, colors='purple', linestyles='dashed')
+            #     self.ax.annotate(str(y), (x, y * 1.025))
 
         if self.showGreenLine:
-            greenLine = self.getGreenLine(frame)
+            greenLine = self.frameUtils.getGreenLine()
             colorLine = "green"
-
-            if self.doSubtraction:
-                subtractedLine = self.subtractActualFromReference(greenLine)
-                self.ax.plot(self.xLimValues, subtractedLine, color=colorLine)
-            elif self.doDivison:
-                dividedLine = self.divideActualFromReference(greenLine)
-                self.ax.plot(self.xLimValues, dividedLine, color=colorLine)
-            else:
-                self.ax.plot(self.xLimValues, greenLine, color=colorLine)
+            self.performOperations(greenLine, colorLine)
 
         if self.showBlueLine:
-            blueLine = self.getBlueLine(frame)
+            blueLine = self.frameUtils.getBlueLine()
             colorLine = "blue"
-
-            if self.doSubtraction:
-                subtractedLine = self.subtractActualFromReference(blueLine)
-                self.ax.plot(self.xLimValues, subtractedLine, color=colorLine)
-            elif self.doDivison:
-                dividedLine = self.divideActualFromReference(blueLine)
-                self.ax.plot(self.xLimValues, dividedLine, color=colorLine)
-            else:
-                self.ax.plot(self.xLimValues, blueLine, color=colorLine)
+            self.performOperations(blueLine, colorLine)
 
         if self.showMaxLine:
-            maxValue = self.getMaxLine(frame)
+            maxValue = self.frameUtils.getMaxLine()
             colorLine = "black"
+            self.performOperations(maxValue, colorLine)
 
+    def performOperations(self, line, colorLine):
+        try:
             if self.doSubtraction:
-                subtractedLine = self.subtractActualFromReference(maxValue)
+                subtractedLine = self.frameUtils.subtractLines(line)
                 self.ax.plot(self.xLimValues, subtractedLine, color=colorLine)
             elif self.doDivison:
-                dividedLine = self.divideActualFromReference(maxValue)
+                dividedLine = self.frameUtils.divdeLines(line)
                 self.ax.plot(self.xLimValues, dividedLine, color=colorLine)
             else:
-                self.ax.plot(self.xLimValues, maxValue, color=colorLine)
+                self.ax.plot(self.xLimValues, line, color=colorLine)
+        except ValueError:
+            self.ax.plot(self.xLimValues, line, color=colorLine)
 
-    def avgLines(self, frame, lineFrom, lineTo, color=2):
-        if lineFrom == lineTo:
-            line = frame[self.mainLine, :, color]
-            return line
-
-        selectedLines = frame[lineFrom:lineTo, :, color]
-        line = np.mean(selectedLines, axis=0)
-
-        return line
+    def drawCaary(self, cary, peeky):
+        for x, y in zip(peeky, cary[peeky]):
+            # self.ax.plot(x, y, 'k', linestyle='dashed', linewidth=1, alpha=0.7)
+            self.ax.vlines(x=x, ymin=min(cary), ymax=y, colors='purple', linestyles='dashed')
+            self.ax.annotate(str(y), (x, y * 1.025))
 
     def show_plot(self):
         # self.startT2(self.camera.get_frame().__next__())
@@ -124,15 +118,6 @@ class Plot:
         self.start()
         # self.canvas.draw()
         self.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-
-    def subtractActualFromReference(self, actual):
-        return np.subtract(actual, self.referenceData).astype(np.int8)
-
-    def divideActualFromReference(self, actual):
-        dividedLine = np.divide(actual, self.referenceData)
-        """ replace Inf and NaN values with 1"""
-        np.place(dividedLine, np.isinf(dividedLine) | np.isnan(dividedLine), 1)
-        return dividedLine
 
     def showPixelView(self):
         self.xLimValues = range(0, 1280)
@@ -147,7 +132,7 @@ class Plot:
         self.t.start()
 
     def startT2(self, initFrame):
-        self.t2 = Thread(target=self.camera.showImage(initFrame))
+        self.t2 = Thread(target=self.frameUtils.getRedLine())
         self.t2.start()
 
     def pause(self):
@@ -163,6 +148,7 @@ class Plot:
             self.camera.start()
 
     def release(self):
+        self.ani.event_source.stop()
         self.camera.release()
         self.t.join()
 
@@ -177,23 +163,9 @@ class Plot:
     def initExposureTimeSlider(self, slider):
         self.slider = slider
 
-    def getRedLine(self, frame):
-        return self.avgLines(frame, self.lineFrom, self.lineTo, 2)
-
-    def getGreenLine(self, frame):
-        return self.avgLines(frame, self.lineFrom, self.lineTo, 0)
-
-    def getBlueLine(self, frame):
-        return self.avgLines(frame, self.lineFrom, self.lineTo, 1)
-
-    def getMaxLine(self, frame):
-        redLine = self.getRedLine(frame)
-        greenLine = self.getGreenLine(frame)
-        blueLine = self.getBlueLine(frame)
-        return np.maximum.reduce([redLine, greenLine, blueLine])
-
     def setMainLine(self, mainLine):
         self.mainLine = mainLine
+        self.frameUtils.setMainLine(mainLine)
 
     def setExtraLines(self, extraLines):
 
@@ -210,11 +182,9 @@ class Plot:
         self.camera.setExposureTime(exposureTieme)
 
     def setReferenceData(self):
-        self.referenceData = self.getMaxLine(self.camera.get_frame().__next__())
-        """change value of 0 in reference data with 1
-            for reason of dividing by 0 """
-        # self.referenceData = np.where(self.referenceData == 0, 1, self.referenceData)
-        print(self.referenceData)
+        self.frameUtils.setFrame(self.camera.get_frame().__next__())
+        self.referenceData = self.frameUtils.getMaxLine()
+        self.frameUtils.setReferenceData(self.referenceData)
 
     def setSubstraction(self):
         self.doSubtraction = True

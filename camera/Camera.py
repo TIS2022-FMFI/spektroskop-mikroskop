@@ -21,7 +21,7 @@ class Camera:
         self.scrollbar = None
         self.myCanvas = None
 
-        self.extraLines = 1
+        self.extraLines = 0
         self.drawTopLine = self.cameraHieght // 2 - 1
         self.drawBottomLine = self.cameraHieght // 2 + 1
 
@@ -30,18 +30,22 @@ class Camera:
         self.lastFrame = None
 
     def handleMauseClick(self, event):
-        print("Mouse clicked at x:", event.x, "y:", event.y)
+        # print("Mouse clicked at x:", event.x, "y:", event.y)
         scroll_pos = self.scrollbar.get()
         mainLine = event.y + (scroll_pos[0] * self.cameraHieght)
         self.plot.setMainLine(int(mainLine))
         self.plot.setExtraLines(self.extraLines)
         self.setExtraLines(int(mainLine), self.extraLines)
 
+    def handleScrollEvent(self, event):
+        self.myCanvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
+
     def initCanvas(self, canvas):
         self.rootCanvas = canvas
 
         self.myCanvas = tk.Canvas(self.rootCanvas)
         self.myCanvas.bind("<Button-1>", self.handleMauseClick)
+        self.myCanvas.bind("<MouseWheel>", self.handleScrollEvent)
 
         self.myCanvas.pack(fill='both', expand=True)
 
@@ -63,14 +67,10 @@ class Camera:
             _, frame = self.camera.read()
             yield frame
         else:
-            yield self.lastFrame
+            ...
+            # yield self.lastFrame
 
     def showImage(self, frame):
-        if self.drawTopLine:
-            cv2.line(frame, (0, self.drawTopLine), (frame.shape[1], self.drawTopLine), (255, 255, 255), thickness=1)
-        if self.drawBottomLine:
-            cv2.line(frame, (0, self.drawBottomLine), (frame.shape[1], self.drawBottomLine), (255, 255, 255), thickness=1)
-
         cv2image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         img = Image.fromarray(cv2image)
         # Convert image to PhotoImage
@@ -78,6 +78,8 @@ class Camera:
         imgtk = ImageTk.PhotoImage(image=img)
         self.label.imgtk = imgtk
         self.myCanvas.create_image(0, 0, image=imgtk, anchor=NW)
+
+        self.drawGuidengLines()
 
     def start(self):
         self.camera = cv2.VideoCapture(self.cameraId)
@@ -90,8 +92,15 @@ class Camera:
         self.release()
 
     def release(self):
-        self.myCanvas.destroy()
+        if self.myCanvas is not None:
+            self.myCanvas.destroy()
         self.camera.release()
+
+    def drawGuidengLines(self):
+        if self.drawTopLine:
+            self.myCanvas.create_line(0, self.drawTopLine, self.myCanvas.winfo_width(), self.drawTopLine, fill="white", width=1)
+        if self.drawBottomLine:
+            self.myCanvas.create_line(0, self.drawBottomLine, self.myCanvas.winfo_width(), self.drawBottomLine, fill="white", width=1)
 
     def setExposureTime(self, exposureTime):
         self.camera.set(cv2.CAP_PROP_EXPOSURE, int(exposureTime))
@@ -115,7 +124,3 @@ class Camera:
 
     def initPlot(self, plot):
         self.plot = plot
-
-
-
-
