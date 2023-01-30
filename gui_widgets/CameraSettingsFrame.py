@@ -1,3 +1,4 @@
+from threading import Thread
 from tkinter import *
 from tkinter import ttk
 import cv2
@@ -10,6 +11,8 @@ from gui_widgets.FrameBaseClass import FrameBaseClass
 class CameraSettingsFrame(FrameBaseClass):
     def __init__(self, plot=None, spectroImageFrame=None, liveCameraFrame=None, spectroCamera=None, liveCamera=None):
         super().__init__()
+
+        self.t = None
 
         self.plot = plot
         self.spectroImageFrame = spectroImageFrame
@@ -167,11 +170,16 @@ class CameraSettingsFrame(FrameBaseClass):
                 spectroCamera.initCanvas(self.spectroImageFrame)
                 self.spectroCamera = spectroCamera
                 self.plot.show_plot()
+                # self.start()
             else:
                 spectroCamera = Camera(int(idSpec), self.plot)
                 self.plot.camera = spectroCamera
                 spectroCamera.initCanvas(self.spectroImageFrame)
                 self.spectroCamera = spectroCamera
                 self.plot.show_plot()
+
+    def start(self):
+        self.t = Thread(target=self.plot.show_plot)
+        self.t.start()
 
 
