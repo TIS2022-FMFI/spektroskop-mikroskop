@@ -92,7 +92,8 @@ class Camera:
         self.release()
 
     def release(self):
-        self.myCanvas.destroy()
+        if self.myCanvas is not None:
+            self.myCanvas.destroy()
         self.camera.release()
 
     def drawGuidengLines(self):
