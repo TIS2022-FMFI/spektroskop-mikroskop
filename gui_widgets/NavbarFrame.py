@@ -4,8 +4,7 @@ from gui_widgets.FrameBaseClass import FrameBaseClass
 
 
 class NavbarFrame(FrameBaseClass):
-    def __init__(self, cameraSettingsFrame, calibrationFrame, d32Frame, graphFunctionFrame, d3Frame, importExportFrame,
-                 cameraFeedTopLevel):
+    def __init__(self, cameraSettingsFrame, calibrationFrame, d32Frame, graphFunctionFrame, d3Frame, importExportFrame):
         super().__init__()
         # Setting color of frame Navbar frame
         self.configure(bg=self.NAVBAR_FRAME_COLOR)
@@ -20,7 +19,6 @@ class NavbarFrame(FrameBaseClass):
         self.graphFunctionFrame = graphFunctionFrame
         self.d3Frame = d3Frame
         self.importExportFrame = importExportFrame
-        self.cameraFeedTopLevel = cameraFeedTopLevel
 
         self.plot = None
 
