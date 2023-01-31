@@ -9,16 +9,15 @@ from gui_widgets.FrameBaseClass import FrameBaseClass
 
 # TODO LOGIKA PRI ZMENE CONNECTION OBRAZKA
 class CameraSettingsFrame(FrameBaseClass):
-    def __init__(self, plot=None, spectroImageFrame=None, liveCameraFrame=None, spectroCamera=None, liveCamera=None):
+    def __init__(self, plot=None, spectroCamera=None, liveCamera=None, liveCameraFrame=None):
         super().__init__()
 
         self.t = None
 
         self.plot = plot
-        self.spectroImageFrame = spectroImageFrame
-        self.liveCameraFrame = liveCameraFrame
         self.spectroCamera = spectroCamera
         self.liveCamera = liveCamera
+        self.liveCameraFrame = liveCameraFrame
 
         # Setting color of frame
         self.configure(bg=self.FRAME_COLOR)
@@ -150,33 +149,19 @@ class CameraSettingsFrame(FrameBaseClass):
 
         if idLive != "":
             if self.liveCamera is None:
-                self.liveCamera = Camera(int(idLive))
-                self.liveCameraFrame.initCamera(self.liveCamera)
-                self.liveCameraFrame.start()
-            else:
-                self.liveCamera.release()
-                self.liveCamera = Camera(int(idLive))
-                self.liveCameraFrame.release()
-                self.liveCameraFrame.initCamera(self.liveCamera)
-                self.liveCameraFrame.start()
+                raise RuntimeError("Live camera initioalization failed")
+            self.liveCamera.setCameraId(int(idLive))
+            self.liveCameraFrame.start()
 
     def setSpectroCamera(self):
         idSpec = self.spectroscopeCameraVAR.get()
+
         if idSpec != "":
-            if self.spectroCamera is not None:
-                self.plot.release()
-                spectroCamera = Camera(int(idSpec), self.plot)
-                self.plot.camera = spectroCamera
-                spectroCamera.initCanvas(self.spectroImageFrame)
-                self.spectroCamera = spectroCamera
-                self.plot.show_plot()
-                # self.start()
-            else:
-                spectroCamera = Camera(int(idSpec), self.plot)
-                self.plot.camera = spectroCamera
-                spectroCamera.initCanvas(self.spectroImageFrame)
-                self.spectroCamera = spectroCamera
-                self.plot.show_plot()
+            if self.spectroCamera is None:
+                raise RuntimeError("Spectro camera initioalisation failed")
+            self.spectroCamera.setCameraId(int(idSpec))
+            self.spectroCamera.start()
+            self.plot.show_plot()
 
     def start(self):
         self.t = Thread(target=self.plot.show_plot)
