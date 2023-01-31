@@ -220,19 +220,29 @@ class Plot:
 
     def setReferenceData(self):
         """ sets reference data for subtraction and division """
-        self.frameUtils.setFrame(self.camera.get_frame().__next__())
-        self.referenceData = self.frameUtils.getMaxLine()
-        self.frameUtils.setReferenceData(self.referenceData)
+        if self.camera.isCapturing:
+            self.frameUtils.setFrame(self.camera.get_frame().__next__())
+            self.referenceData = self.frameUtils.getMaxLine()
+            self.frameUtils.setReferenceData(self.referenceData)
+        else:
+            self.frameUtils.setFrame(self.camera.lastFrame)
+            self.referenceData = self.frameUtils.getMaxLine()
 
     def setSubstraction(self):
         """ sets whether to do subtraction over graph """
         self.doSubtraction = True
         self.doDivison = False
+        if not self.camera.isCapturing:
+            self.updatePlot(self.camera.lastFrame)
+            self.canvas.draw()
 
     def setDivision(self):
         """ sets whether to do division over graph """
         self.doDivison = True
         self.doSubtraction = False
+        if not self.camera.isCapturing:
+            self.updatePlot(self.camera.lastFrame)
+            self.canvas.draw()
 
     def setShowRedLine(self, value):
         """ sets whether to show redLine """
@@ -241,6 +251,9 @@ class Plot:
         else:
             self.showRedLine = False
             self.redLine.set_data([], [])
+        if not self.camera.isCapturing:
+            self.updatePlot(self.camera.lastFrame)
+            self.canvas.draw()
 
     def setShowGreenLine(self, value):
         """ sets whether to show greenLine """
@@ -249,6 +262,9 @@ class Plot:
         else:
             self.showGreenLine = False
             self.greenLine.set_data([], [])
+        if not self.camera.isCapturing:
+            self.updatePlot(self.camera.lastFrame)
+            self.canvas.draw()
 
     def setShowBlueLine(self, value):
         """ sets whether to show blueLine """
@@ -257,6 +273,9 @@ class Plot:
         else:
             self.showBlueLine = False
             self.blueLine.set_data([], [])
+        if not self.camera.isCapturing:
+            self.updatePlot(self.camera.lastFrame)
+            self.canvas.draw()
 
     def setShowMaxLine(self, value):
         """ sets whether to show maxLine """
@@ -265,6 +284,9 @@ class Plot:
         else:
             self.showMaxLine = False
             self.maxLine.set_data([], [])
+        if not self.camera.isCapturing:
+            self.updatePlot(self.camera.lastFrame)
+            self.canvas.draw()
 
     def selectMinMax(self):
         """ calculet the min and max borders for y-axis of graph """
