@@ -36,6 +36,10 @@ class Camera:
         self.plot.setExtraLines(self.extraLines)
         self.setExtraLines(int(mainLine), self.extraLines)
 
+        if not self.isCapturing:
+            self.plot.updatePlot(self.lastFrame)
+            self.plot.canvas.draw()
+
     def handleScrollEvent(self, event):
         self.myCanvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
 
@@ -87,10 +91,10 @@ class Camera:
 
     def pause(self):
         self.lastFrame = self.get_frame().__next__()
-        self.isCapturing = False
         self.release()
 
     def release(self):
+        self.isCapturing = False
         if self.camera is not None:
             self.camera.release()
 
