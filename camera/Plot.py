@@ -200,6 +200,7 @@ class Plot:
         """ sets the main(middle) line of frame where are data are taken from """
         self.mainLine = mainLine
         self.frameUtils.setMainLine(mainLine)
+        self.handleStaticData()
 
     def setExtraLines(self, extraLines):
 
@@ -213,6 +214,7 @@ class Plot:
             self.lineTo = min(self.mainLine + extraLines, self.camera.getCameraHeight())
             self.camera.setExtraLines(self.mainLine, extraLines)
             self.frameUtils.setLinesFromTo(self.lineFrom, self.lineTo)
+        self.handleStaticData()
 
     def setExposureTimeForCamera(self, exposureTieme):
         """ sets exposure time of camera """
@@ -232,17 +234,13 @@ class Plot:
         """ sets whether to do subtraction over graph """
         self.doSubtraction = True
         self.doDivison = False
-        if not self.camera.isCapturing:
-            self.updatePlot(self.camera.lastFrame)
-            self.canvas.draw()
+        self.handleStaticData()
 
     def setDivision(self):
         """ sets whether to do division over graph """
         self.doDivison = True
         self.doSubtraction = False
-        if not self.camera.isCapturing:
-            self.updatePlot(self.camera.lastFrame)
-            self.canvas.draw()
+        self.handleStaticData()
 
     def setShowRedLine(self, value):
         """ sets whether to show redLine """
@@ -251,9 +249,7 @@ class Plot:
         else:
             self.showRedLine = False
             self.redLine.set_data([], [])
-        if not self.camera.isCapturing:
-            self.updatePlot(self.camera.lastFrame)
-            self.canvas.draw()
+        self.handleStaticData()
 
     def setShowGreenLine(self, value):
         """ sets whether to show greenLine """
@@ -262,9 +258,7 @@ class Plot:
         else:
             self.showGreenLine = False
             self.greenLine.set_data([], [])
-        if not self.camera.isCapturing:
-            self.updatePlot(self.camera.lastFrame)
-            self.canvas.draw()
+        self.handleStaticData()
 
     def setShowBlueLine(self, value):
         """ sets whether to show blueLine """
@@ -273,9 +267,7 @@ class Plot:
         else:
             self.showBlueLine = False
             self.blueLine.set_data([], [])
-        if not self.camera.isCapturing:
-            self.updatePlot(self.camera.lastFrame)
-            self.canvas.draw()
+        self.handleStaticData()
 
     def setShowMaxLine(self, value):
         """ sets whether to show maxLine """
@@ -284,9 +276,7 @@ class Plot:
         else:
             self.showMaxLine = False
             self.maxLine.set_data([], [])
-        if not self.camera.isCapturing:
-            self.updatePlot(self.camera.lastFrame)
-            self.canvas.draw()
+        self.handleStaticData()
 
     def selectMinMax(self):
         """ calculet the min and max borders for y-axis of graph """
@@ -307,3 +297,8 @@ class Plot:
 
     def setCamera(self, camera):
         self.camera = camera
+
+    def handleStaticData(self):
+        if not self.camera.isCapturing:
+            self.updatePlot(self.camera.lastFrame)
+            self.canvas.draw()
