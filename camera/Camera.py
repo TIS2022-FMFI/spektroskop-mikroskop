@@ -10,10 +10,7 @@ class Camera:
     def __init__(self, cameraId=0, plot=None):
         self.cameraHieght = 720
         self.cameraWidth = 1200
-
-        self.camera = cv2.VideoCapture(cameraId)
-        self.camera.set(cv2.CAP_PROP_FRAME_WIDTH, self.cameraWidth)
-        self.camera.set(cv2.CAP_PROP_FRAME_HEIGHT, self.cameraHieght)
+        self.camera = None
         self.cameraId = cameraId
         self.zoom = 1.0
         self.angle = 0.0
@@ -125,3 +122,6 @@ class Camera:
 
     def initPlot(self, plot):
         self.plot = plot
+
+    def setCameraId(self, cameraId):
+        self.cameraId = cameraId

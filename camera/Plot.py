@@ -13,7 +13,7 @@ from camera.FrameUtilMethods import FrameUtilMethods
 
 
 class Plot:
-    def __init__(self, canvas, camera=Camera(1)):
+    def __init__(self, canvas, camera=Camera(0)):
         plt.style.use('ggplot')
         self.fig, self.ax = plt.subplots()
         self.redLine, = self.ax.plot([], [], "red")
@@ -161,22 +161,27 @@ class Plot:
         self.t2.start()
 
     def pause(self):
-        self.ani.event_source.stop()
-        self.camera.pause()
+        if self.ani is not None:
+            self.ani.event_source.stop()
+        if self.camera is not None:
+            self.camera.pause()
 
     def resume(self):
         if not self.isPaused:
-            self.show_plot()
             self.camera.start()
+            self.show_plot()
         else:
             self.ani.event_source.start()
             self.camera.start()
 
     def release(self):
         """ stops graph animation and releases camera """
-        self.ani.event_source.stop()
-        self.camera.release()
-        self.t.join()
+        if self.ani is not None:
+            self.ani.event_source.stop()
+        if self.camera is not None:
+            self.camera.release()
+        if self.t is not None:
+            self.t.join()
 
     def initModel(self, model):
         """ initialise model for calculating wavelengt """
@@ -278,3 +283,6 @@ class Plot:
         if self.showBlueLine:
             self.yMin = min(self.yMin, min(self.blueLine.get_ydata()))
             self.yMax = max(self.yMax, max(self.blueLine.get_ydata()))
+
+    def setCamera(self, camera):
+        self.camera = camera

@@ -42,6 +42,7 @@ class LiveCameraWindow(Frame):
         self.camera = camera
 
     def wof(self):
+        self.camera.start()
         self.window = Toplevel(self.parent)
         self.lmain = Label(self.window)
         self.lmain.pack()
