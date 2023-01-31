@@ -5,8 +5,10 @@ from serial.tools import list_ports
 
 
 class MotorController:
-    def __init__(self):
+    def __init__(self, plot=None):
         self.X = 0
+        self.dataContainer = []
+        self.plot = plot
 
         ports = list(serial.tools.list_ports.comports())
         for port in ports:
@@ -32,6 +34,9 @@ class MotorController:
             print("ZZZZZZZZZZZZZZZZZZZ")
             # DO SOMETHING HERE
 
+            self.dataContainer.append(self.plot.camera.get_frame().__next__())
+            # self.dataContainer = self.plot.camera.get_frame().__next__()
+            # print(self.dataContainer)
             if direction == "l":
                 self.X -= 1
             else:

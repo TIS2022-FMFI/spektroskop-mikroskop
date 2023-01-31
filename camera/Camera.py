@@ -1,3 +1,5 @@
+import time
+from threading import Thread
 from tkinter import *
 import tkinter as tk
 from PIL import Image, ImageTk
@@ -78,7 +80,6 @@ class Camera:
         imgtk = ImageTk.PhotoImage(image=img)
         self.label.imgtk = imgtk
         self.myCanvas.create_image(0, 0, image=imgtk, anchor=NW)
-
         self.drawGuidengLines()
 
     def start(self):
