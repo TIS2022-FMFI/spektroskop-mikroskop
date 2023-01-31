@@ -6,7 +6,7 @@ class ImportModule:
     @staticmethod
     def importCameraImage():
         """returns path to the image"""
-        return askopenfilename(filetypes=[('Images', '*.jpg *.jpeg *.png')])
+        return askopenfilename(filetypes=[('Images', '*.jpg *.jpeg *.png *.bmp')])
 
 
 class ExportModule:

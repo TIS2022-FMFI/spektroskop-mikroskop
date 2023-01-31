@@ -5,8 +5,11 @@ from threading import Thread
 from tkinter import *
 
 import matplotlib.pyplot as plt
+import numpy as np
 from matplotlib.animation import FuncAnimation
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import matplotlib.backends.backend_agg as agg
+from scipy.signal import find_peaks
 
 from camera.Camera import Camera
 from camera.FrameUtilMethods import FrameUtilMethods
@@ -20,10 +23,17 @@ class Plot:
         self.greenLine, = self.ax.plot([], [], "green")
         self.blueLine, = self.ax.plot([], [], "blue")
         self.maxLine, = self.ax.plot([], [], "black")
+        self.ax.set_ylabel("INTENSITY")
+        self.ax.set_xlabel("PIXELS")
+        plt.gca().xmargin = 0
         self.xLimValues = range(0, 1280)
         self.yMin = 255
         self.yMax = 0
-        # self.fig.tight_layout()
+        self.annList = []
+        self.lines = None
+        self.ax.xmargin = 0
+
+        self.fig.tight_layout()
         self.ax.use_sticky_edges = True
 
         self.camera = camera
@@ -63,7 +73,7 @@ class Plot:
     def updatePlot(self, frame):
         """ method for updating graph data """
 
-        self.camera.showImage(frame)     # this metod is slowing process significantly the most,
+        self.camera.showImage(frame)  # this metod is slowing process significantly the most,
         # problem is to process image from cv2 camera to format used for canvas process
 
         self.frameUtils.setFrame(frame)
@@ -71,19 +81,25 @@ class Plot:
         if self.showRedLine:
             redLine = self.frameUtils.getRedLine()
             self.performOperations(self.redLine, redLine)
-            # colorLine = "red"
-            # self.performOperations(redLine, colorLine)
 
             # TODO consult with Vojtek it has fuctionality for showing peaks
 
-            # red_peaks_indices, _ = find_peaks(redLine, distance=10)
+            # red_peaks_indices, _ = find_peaks(redLine, distance=20, height=10)
             # red_peaks_indices.astype(np.int8)
             #
+            # for a in self.annList:
+            #     a.remove()
+            # self.annList[:] = []
+            #
+            # if self.lines:
+            #     self.lines.remove()
+            #
+            # self.lines = self.ax.vlines(x=red_peaks_indices, ymin=min(redLine), ymax=redLine[red_peaks_indices],
+            #                             colors="purple", linestyles="dashed")
             #
             # for x, y in zip(red_peaks_indices, redLine[red_peaks_indices]):
-            #     # self.ax.plot(x, y, 'k', linestyle='dashed', linewidth=1, alpha=0.7)
-            #     self.ax.vlines(x=x, ymin=min(redLine), ymax=y, colors='purple', linestyles='dashed')
-            #     self.ax.annotate(str(y), (x, y * 1.025))
+            #     ann = self.ax.text(x - 2, y + 5, str(y))
+            #     self.annList.append(ann)
 
         if self.showGreenLine:
             greenLine = self.frameUtils.getGreenLine()
@@ -125,6 +141,7 @@ class Plot:
             else:
                 self.ax.set_xlim([min(self.xLimValues), max(self.xLimValues)])
                 desiredLine.set_data(newLine)
+
         except ValueError:
             desiredLine.set_data(self.xLimValues, newLine)
 
@@ -137,27 +154,29 @@ class Plot:
     def show_plot(self):
         """ main fuction to call for graph displaying """
         # self.startT2(self.camera.get_frame().__next__())
-        self.ani = FuncAnimation(self.fig, self.updatePlot, frames=self.camera.get_frame(), interval=0.1)
+        self.ani = FuncAnimation(self.fig, self.updatePlot, frames=self.camera.get_frame(), interval=1)
         self.start()
         # self.canvas.draw()
-        self.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+        self.packGraphCanvas()
 
     def showPixelView(self):
         """ sets pixel view """
         self.xLimValues = range(0, self.camera.getCameraWidht())
+        self.ax.set_xlabel("PIXELS")
         # self.ax.set_xlim([0, self.camera.getCameraWidht()])
 
     def showWavelengthView(self):
         """ sets wavelengt view """
         if self.model:
             self.xLimValues = self.model(self.xLimValues)
+            self.ax.set_xlabel("WAVELENGTH")
 
     def start(self):
         self.t = Thread(target=self.canvas.draw())
         self.t.start()
 
     def startT2(self, frame):
-        self.t2 = Thread(target=self.updatePlot, args=(frame, ))
+        self.t2 = Thread(target=self.updatePlot, args=(frame,))
         self.t2.start()
 
     def pause(self):
@@ -229,6 +248,7 @@ class Plot:
         else:
             self.frameUtils.setFrame(self.camera.lastFrame)
             self.referenceData = self.frameUtils.getMaxLine()
+            self.frameUtils.setReferenceData(self.referenceData)
 
     def setSubstraction(self):
         """ sets whether to do subtraction over graph """
@@ -302,3 +322,9 @@ class Plot:
         if not self.camera.isCapturing:
             self.updatePlot(self.camera.lastFrame)
             self.canvas.draw()
+
+    def saveGraph(self):
+        return np.array(self.canvas.renderer.buffer_rgba())
+
+    def packGraphCanvas(self):
+        self.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)

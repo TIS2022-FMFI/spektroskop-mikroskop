@@ -1,14 +1,20 @@
 from tkinter import *
+import tkinter as tk
 from gui_widgets.FrameBaseClass import FrameBaseClass
+from gui_widgets.ImporExportModule import *
+
 
 class ImportExportFrame(FrameBaseClass):
-    def __init__(self):
+    def __init__(self, plot=None):
         super().__init__()
+
+        self.plot = plot
 
         # Setting color of frame
         self.configure(bg=self.FRAME_COLOR)
 
         # Initializing widgets in frame
+        self.importExportModule = ImportModule()
 
         # Labels
         self.importLabel = self.initializeLabel("Import", 1)
@@ -22,14 +28,14 @@ class ImportExportFrame(FrameBaseClass):
         # Buttons
         self.importSpectralImageButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH,
                                                                "Choose")
-        self.importSpectralImageButton.configure(command=lambda: self.FUNCTION_TODO("ARGUMENT"))
+        self.importSpectralImageButton.configure(command=lambda: self.importSpectralImage())
 
         self.graphImageButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH, "Export")
-        self.graphImageButton.configure(command=lambda: self.FUNCTION_TODO("ARGUMENT"))
+        self.graphImageButton.configure(command=lambda: self.exportGraphImage())
 
         self.exportCameraSpectralImageButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH,
                                                                      "Export")
-        self.exportCameraSpectralImageButton.configure(command=lambda: self.FUNCTION_TODO("ARGUMENT"))
+        self.exportCameraSpectralImageButton.configure(command=lambda: self.exportSpectralImage())
 
         self.cameraImageButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH, "Export")
         self.cameraImageButton.configure(command=lambda: self.FUNCTION_TODO("ARGUMENT"))
@@ -59,3 +65,21 @@ class ImportExportFrame(FrameBaseClass):
 
         self.calibrationChartLabel.grid(row=6, column=0, sticky=W)
         self.calibrationChartButton.grid(row=6, column=1, padx=(0, 10), pady=(10, 10))
+
+    def importSpectralImage(self):
+        if self.plot.camera.myCanvas is None:
+            self.plot.camera.initCanvas()
+        self.plot.camera.setPathToImage(self.importExportModule.importCameraImage())
+        self.plot.camera.setLastFrameAsImg()
+        self.plot.camera.initPlot(self.plot)
+        self.plot.packGraphCanvas()
+        self.plot.handleStaticData()
+
+    def exportSpectralImage(self):
+        if self.plot.camera.isCapturing:
+            ExportModule.exportImage(self.plot.camera.get_frame().__next__())
+        else:
+            ExportModule.exportImage(self.plot.camera.lastFrame)
+
+    def exportGraphImage(self):
+        ExportModule.exportImage(self.plot.saveGraph())
