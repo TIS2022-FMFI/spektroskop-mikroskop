@@ -163,7 +163,6 @@ class Plot:
     def pause(self):
         if self.ani is not None:
             self.ani.event_source.stop()
-        if self.camera is not None:
             self.camera.pause()
 
     def resume(self):

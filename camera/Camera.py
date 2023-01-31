@@ -7,7 +7,7 @@ import cv2
 
 
 class Camera:
-    def __init__(self, cameraId=0, plot=None):
+    def __init__(self, cameraId=0, plot=None, parentCanvas=None):
         self.cameraHieght = 720
         self.cameraWidth = 1200
         self.camera = None
@@ -15,7 +15,7 @@ class Camera:
         self.zoom = 1.0
         self.angle = 0.0
         self.isCapturing = True
-        self.rootCanvas = None
+        self.rootCanvas = parentCanvas
         self.label = None
         self.scrollbar = None
         self.myCanvas = None
@@ -39,9 +39,7 @@ class Camera:
     def handleScrollEvent(self, event):
         self.myCanvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
 
-    def initCanvas(self, canvas):
-        self.rootCanvas = canvas
-
+    def initCanvas(self):
         self.myCanvas = tk.Canvas(self.rootCanvas)
         self.myCanvas.bind("<Button-1>", self.handleMauseClick)
         self.myCanvas.bind("<MouseWheel>", self.handleScrollEvent)
@@ -83,6 +81,9 @@ class Camera:
         self.camera = cv2.VideoCapture(self.cameraId)
         self.camera.set(cv2.CAP_PROP_FRAME_WIDTH, self.cameraWidth)
         self.isCapturing = True
+        if self.myCanvas is not None:
+            self.myCanvas.destroy()
+        self.initCanvas()
 
     def pause(self):
         self.lastFrame = self.get_frame().__next__()
@@ -90,9 +91,8 @@ class Camera:
         self.release()
 
     def release(self):
-        if self.myCanvas is not None:
-            self.myCanvas.destroy()
-        self.camera.release()
+        if self.camera is not None:
+            self.camera.release()
 
     def drawGuidengLines(self):
         if self.drawTopLine:
@@ -125,3 +125,6 @@ class Camera:
 
     def setCameraId(self, cameraId):
         self.cameraId = cameraId
+
+    def setRootCanvas(self, canvas):
+        self.rootCanvas = canvas

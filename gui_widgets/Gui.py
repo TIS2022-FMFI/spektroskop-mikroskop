@@ -36,7 +36,7 @@ class GUI(Tk):
 
         '''frame for camera image'''
         self.spectroImageFrame = SpectroImageFrame()
-        self.spectroCamera.initCanvas(self.spectroImageFrame)
+        self.spectroCamera.setRootCanvas(self.spectroImageFrame)
 
         '''frame for live graph'''
         self.graphImageFrame = GraphImageFrame()
