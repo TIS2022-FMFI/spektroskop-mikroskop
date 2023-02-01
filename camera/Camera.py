@@ -9,16 +9,18 @@ import cv2
 class Camera:
     def __init__(self, cameraId=0, plot=None, parentCanvas=None):
         self.cameraHieght = 720
-        self.cameraWidth = 1200
+        self.cameraWidth = 1280
         self.camera = None
         self.cameraId = cameraId
         self.zoom = 1.0
         self.angle = 0.0
-        self.isCapturing = True
+        self.isCapturing = False
         self.rootCanvas = parentCanvas
         self.label = None
         self.scrollbar = None
         self.myCanvas = None
+
+        self.pathToImage = None
 
         self.extraLines = 0
         self.drawTopLine = self.cameraHieght // 2 - 1
@@ -132,3 +134,9 @@ class Camera:
 
     def setRootCanvas(self, canvas):
         self.rootCanvas = canvas
+
+    def setPathToImage(self, path):
+        self.pathToImage = path
+
+    def setLastFrameAsImg(self):
+        self.lastFrame = cv2.imread(self.pathToImage)
