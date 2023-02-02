@@ -1,6 +1,5 @@
 from tkinter import *
 
-
 class FrameBaseClass(Frame):
     def __init__(self):
         super().__init__()
@@ -19,12 +18,12 @@ class FrameBaseClass(Frame):
         self.BUTTON_SIZE_HEIGHT = 20
         self.BUTTON_SIZE_WIDTH = 80
 
-        self.SPECTROMETER_FRAME_WIDTH = self.winfo_screenwidth() * 0.9
+        self.SPECTROMETER_FRAME_WIDTH = self.winfo_screenwidth() * 0.7
         self.SPECTROMETER_FRAME_HEIGHT = 200
 
-        self.GRAPH_FRAME_WIDTH = self.winfo_screenwidth() * 0.9
+        self.GRAPH_FRAME_WIDTH = self.winfo_screenwidth() * 0.7
         """ 300 is for spectrometer frame height plus motor control frame plus some padding"""
-        self.GRAPH_FRAME_HEIGHT = (self.winfo_screenheight() * 0.9) - 400
+        self.GRAPH_FRAME_HEIGHT = (self.winfo_screenheight() * 0.4)
 
         self.IMAGE_TRICK = PhotoImage(width=1, height=1)  # Used for a trick that lets you enable button sizes by px
 

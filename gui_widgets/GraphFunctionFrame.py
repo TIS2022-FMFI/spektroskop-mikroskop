@@ -167,14 +167,14 @@ class GraphFunctionFrame(FrameBaseClass):
         self.plot.setShowPeaks()
 
     def setPeakDistance(self):
-        peakDistance = self.peakMinYDifEntry.get()
-        if peakDistance != '':
-            self.plot.setPeakDistance(int(self.peakMinXDifEntry.get()))
+        peakHeight = self.peakMinXDifEntry.get()
+        if peakHeight != '':
+            self.plot.setPeakDistance(int(peakHeight))
 
     def setPeakHeight(self):
-        peakHeight = self.peakMinYDifEntry.get()
-        if peakHeight != '':
-            self.plot.setPeakDistance(int(self.peakMinYDifEntry.get()))
+        peakDistance = self.peakMinYDifEntry.get()
+        if peakDistance != '':
+            self.plot.setPeakHight(int(peakDistance))
 
     def setMeasurements(self):
         self.setPeakHeight()
