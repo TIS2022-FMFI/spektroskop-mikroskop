@@ -1,7 +1,12 @@
+import datetime
+import os
 import time
+from threading import Thread
 
 import serial
 from serial.tools import list_ports
+from gui_widgets.ImporExportModule import *
+import cv2 as cv
 
 
 class MotorController:
@@ -9,6 +14,8 @@ class MotorController:
         self.X = 0
         self.dataContainer = []
         self.plot = plot
+
+        self.t = None
 
         ports = list(serial.tools.list_ports.comports())
         for port in ports:
@@ -21,7 +28,7 @@ class MotorController:
             a = 1
         time.sleep(3)
 
-    def moveX(self,direction,numberOfSteps):
+    def _doMoveX(self,direction,numberOfSteps):
         # Setting relative mode (G90 absolute)
         # self.ser.write(str.encode('G91\r\n'))
 
@@ -44,3 +51,21 @@ class MotorController:
             # self.ser.write(str.encode('G0X' + stepUnit + 'F01\r\n'))
             time.sleep(2)
         # self.ser.close()
+
+    def moveX(self, direction, numberOfSteps):
+        self.t = Thread(target=self._doMoveX, args=(direction, numberOfSteps))
+        self.t.start()
+
+    def saveData(self):
+        path = askdirectory()
+        dateTime = datetime.datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
+        path += "/" + dateTime
+        os.mkdir(path)
+        frameCounter = 0
+        for frame in self.dataContainer:
+            name = path + "/{:03d}".format(frameCounter) + ".png"
+            frameCounter += 1
+            cv.imwrite(name, frame)
+
+    def releaseThread(self):
+        self.t.join()

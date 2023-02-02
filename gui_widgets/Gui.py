@@ -51,7 +51,7 @@ class GUI(Tk):
         self.d32Frame = D32Frame()
         self.graphFunctionFrame = GraphFunctionFrame()
         self.d3Frame = D3Frame(self.motorControlsFrame)
-        self.importExportFrame = ImportExportFrame(self.plot)
+        self.importExportFrame = ImportExportFrame(self.plot, self.motorControlsFrame)
 
         self.navbarFrame = NavbarFrame(self.cameraSettingsFrame, self.calibrationFrame, self.d32Frame,
                                        self.graphFunctionFrame, self.d3Frame, self.importExportFrame)
