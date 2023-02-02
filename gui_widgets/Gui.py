@@ -1,4 +1,5 @@
 from tkinter import *
+import tkinter as tk
 
 from camera.Camera import Camera
 from camera.Plot import Plot
@@ -19,8 +20,10 @@ class GUI(Tk):
     def __init__(self):
         super().__init__()
         # Initializing constants
-        # self.MASTER_WIDTH = 1500
-        # self.MASTER_HEIGHT = 750
+        self.MASTER_WIDTH = int(self.winfo_screenwidth() * 0.7)
+        self.MASTER_HEIGHT = int(self.winfo_screenheight() * 0.6)
+        print(self.MASTER_HEIGHT)
+        print(self.MASTER_WIDTH)
 
         self.model = None
         self.spectroCamera = Camera()
@@ -57,8 +60,10 @@ class GUI(Tk):
                                        self.graphFunctionFrame, self.d3Frame, self.importExportFrame)
         # Placing frame objects into the window
         self.navbarFrame.pack(side=LEFT, fill=Y)
-        self.spectroImageFrame.pack(pady=(30, 0))
-        self.graphImageFrame.pack(pady=(20, 0))
+
+        print(self.winfo_height())
+        self.spectroImageFrame.pack(pady=(30, 0), padx=(250, 20), anchor=tk.E, fill=BOTH)
+        self.graphImageFrame.pack(pady=(20, 0), expand=True, fill=BOTH)
         self.motorControlsFrame.pack(side=BOTTOM)
 
         '''init plot for frames that has dependancy on it'''
