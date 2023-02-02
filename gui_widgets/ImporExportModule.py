@@ -1,4 +1,4 @@
-from tkinter.filedialog import askopenfilename, asksaveasfile
+from tkinter.filedialog import askopenfilename, asksaveasfile, askdirectory, askopenfilenames
 import cv2 as cv
 
 

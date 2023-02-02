@@ -78,8 +78,6 @@ class Render3DGraph:
                 x += self.cellSize
             y += self.cellSize
 
-
-
     def renderHeightMap(self, waveLength, newHeightMap=None):
         """main window creation, checks whether the new map fill fit into given window size,
          if it is possible then handles rendering of graphs"""
@@ -94,7 +92,7 @@ class Render3DGraph:
             frameUtil.setFrame(frame)
             pom.append(frameUtil.getCollumn(waveLength))
 
-        self.heightMap = np.invert(pom)
+        self.heightMap = np.rot90(pom)
         print(self.heightMap)
         master = tkinter.Tk()
         master.title(str(waveLength) + " nm")
@@ -114,11 +112,11 @@ class Render3DGraph:
         # print(self.heightMap)
         button3D.place(x=self.margin * 2 + self.cellSize * (len(self.heightMap[0]) + 3) + self.cellSize / 3
                          * len(self.heightMap),
-                       y=self.margin - 2 + 10 * (len(self.heightMap) + 2))
+                       y=100)
         buttonSave = tkinter.Button(master, text="Save", command=saveGraph)
         buttonSave.place(x=self.margin * 2 + self.cellSize * (len(self.heightMap[0]) + 3) + self.cellSize / 3
                          * len(self.heightMap),
-                       y=self.margin + 3 * (len(self.heightMap) + 2))
+                       y=self.margin + (len(self.heightMap) + 2)*.8)
         self.render2D()
         master.mainloop()
 

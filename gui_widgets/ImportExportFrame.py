@@ -5,10 +5,11 @@ from gui_widgets.ImporExportModule import *
 
 
 class ImportExportFrame(FrameBaseClass):
-    def __init__(self, plot=None):
+    def __init__(self, plot=None, motorControllerFrame=None):
         super().__init__()
 
         self.plot = plot
+        self.motorControllerFrame = motorControllerFrame
 
         # Setting color of frame
         self.configure(bg=self.FRAME_COLOR)
@@ -19,6 +20,7 @@ class ImportExportFrame(FrameBaseClass):
         # Labels
         self.importLabel = self.initializeLabel("Import", 1)
         self.importCameraSpectralImageLabel = self.initializeLabel("Camera spectral image:", 0)
+        self.importMeasurementSeriesLabel = self.initializeLabel("Measurement series:", 0)
         self.exportLabel = self.initializeLabel("Export", 1)
         self.graphImageLabel = self.initializeLabel("Graph image:", 0)
         self.exportCameraSpectralImageLabel = self.initializeLabel("Camera spectral image:", 0)
@@ -29,6 +31,10 @@ class ImportExportFrame(FrameBaseClass):
         self.importSpectralImageButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH,
                                                                "Choose")
         self.importSpectralImageButton.configure(command=lambda: self.importSpectralImage())
+
+        self.importMeasurementSeriesButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH,
+                                                                   "Choose")
+        self.importMeasurementSeriesButton.configure(command=lambda: self.importMeasurementSeries())
 
         self.graphImageButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH, "Export")
         self.graphImageButton.configure(command=lambda: self.exportGraphImage())
@@ -52,19 +58,22 @@ class ImportExportFrame(FrameBaseClass):
         self.importCameraSpectralImageLabel.grid(row=1, column=0, sticky=W)
         self.importSpectralImageButton.grid(row=1, column=1, padx=(0, 10), pady=(10, 10))
 
-        self.exportLabel.grid(row=2, column=0, columnspan=2, sticky=W)
+        self.importMeasurementSeriesLabel.grid(row=2, column=0, sticky=W)
+        self.importMeasurementSeriesButton.grid(row=2, column=1, padx=(0, 10), pady=(10, 10))
 
-        self.graphImageLabel.grid(row=3, column=0, sticky=W)
-        self.graphImageButton.grid(row=3, column=1, padx=(0, 10), pady=(10, 10))
+        self.exportLabel.grid(row=3, column=0, columnspan=2, sticky=W)
 
-        self.exportCameraSpectralImageLabel.grid(row=4, column=0, sticky=W)
-        self.exportCameraSpectralImageButton.grid(row=4, column=1, padx=(0, 10), pady=(10, 10))
+        self.graphImageLabel.grid(row=4, column=0, sticky=W)
+        self.graphImageButton.grid(row=4, column=1, padx=(0, 10), pady=(10, 10))
 
-        self.cameraImageLabel.grid(row=5, column=0, sticky=W)
-        self.cameraImageButton.grid(row=5, column=1, padx=(0, 10), pady=(10, 10))
+        self.exportCameraSpectralImageLabel.grid(row=5, column=0, sticky=W)
+        self.exportCameraSpectralImageButton.grid(row=5, column=1, padx=(0, 10), pady=(10, 10))
 
-        self.calibrationChartLabel.grid(row=6, column=0, sticky=W)
-        self.calibrationChartButton.grid(row=6, column=1, padx=(0, 10), pady=(10, 10))
+        self.cameraImageLabel.grid(row=6, column=0, sticky=W)
+        self.cameraImageButton.grid(row=6, column=1, padx=(0, 10), pady=(10, 10))
+
+        self.calibrationChartLabel.grid(row=7, column=0, sticky=W)
+        self.calibrationChartButton.grid(row=7, column=1, padx=(0, 10), pady=(10, 10))
 
     def importSpectralImage(self):
         if self.plot.camera.myCanvas is None:
@@ -83,3 +92,10 @@ class ImportExportFrame(FrameBaseClass):
 
     def exportGraphImage(self):
         ExportModule.exportImage(self.plot.saveGraph())
+
+    def importMeasurementSeries(self):
+        files = askopenfilenames(filetypes=[('Images', '*.jpg *.jpeg *.png *.bmp')])
+        self.motorControllerFrame.motorController.dataContainer = []
+        for file in files:
+            fr = cv.imread(file)
+            self.motorControllerFrame.motorController.dataContainer.append(fr)

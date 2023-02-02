@@ -1,7 +1,11 @@
+import datetime
+import os
 import time
 
 import serial
 from serial.tools import list_ports
+from gui_widgets.ImporExportModule import *
+import cv2 as cv
 
 
 class MotorController:
@@ -43,4 +47,17 @@ class MotorController:
                 self.X += 1
             # self.ser.write(str.encode('G0X' + stepUnit + 'F01\r\n'))
             time.sleep(2)
+
+        self.saveData()
         # self.ser.close()
+
+    def saveData(self):
+        path = askdirectory()
+        dateTime = datetime.datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
+        path += "/" + dateTime
+        os.mkdir(path)
+        frameCounter = 0
+        for frame in self.dataContainer:
+            name = path + "/{:03d}".format(frameCounter) + ".png"
+            frameCounter += 1
+            cv.imwrite(name, frame)

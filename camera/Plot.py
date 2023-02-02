@@ -51,6 +51,10 @@ class Plot:
         self.showWavelengt = False
         self.model = None
 
+        self.showPeaks = False
+        self.peakDistance = 20
+        self.peakHeight = 20
+
         '''sets defoult capturing line to be middle of comarea capture'''
         # self.mainLine = self.camera.getCameraHeight() // 2
         self.mainLine = 100
@@ -82,25 +86,6 @@ class Plot:
             redLine = self.frameUtils.getRedLine()
             self.performOperations(self.redLine, redLine)
 
-            # TODO consult with Vojtek it has fuctionality for showing peaks
-
-            # red_peaks_indices, _ = find_peaks(redLine, distance=20, height=10)
-            # red_peaks_indices.astype(np.int8)
-            #
-            # for a in self.annList:
-            #     a.remove()
-            # self.annList[:] = []
-            #
-            # if self.lines:
-            #     self.lines.remove()
-            #
-            # self.lines = self.ax.vlines(x=red_peaks_indices, ymin=min(redLine), ymax=redLine[red_peaks_indices],
-            #                             colors="purple", linestyles="dashed")
-            #
-            # for x, y in zip(red_peaks_indices, redLine[red_peaks_indices]):
-            #     ann = self.ax.text(x - 2, y + 5, str(y))
-            #     self.annList.append(ann)
-
         if self.showGreenLine:
             greenLine = self.frameUtils.getGreenLine()
             self.performOperations(self.greenLine, greenLine)
@@ -112,6 +97,19 @@ class Plot:
         if self.showMaxLine:
             maxValue = self.frameUtils.getMaxLine()
             self.performOperations(self.maxLine, maxValue)
+
+            if self.showPeaks:
+                red_peaks_indices, _ = find_peaks(maxValue, distance=self.peakDistance, height=self.peakHeight)
+                red_peaks_indices.astype(np.int8)
+
+                self.deletePeaks()
+
+                self.lines = self.ax.vlines(x=red_peaks_indices, ymin=self.yMin, ymax=maxValue[red_peaks_indices],
+                                            colors="purple", linestyles="dashed")
+
+                for x, y in zip(red_peaks_indices, maxValue[red_peaks_indices]):
+                    ann = self.ax.text(x - 2, y + 5, str(y))
+                    self.annList.append(ann)
 
         self.selectMinMax()
         if self.yMin < 0:
@@ -163,13 +161,15 @@ class Plot:
         """ sets pixel view """
         self.xLimValues = range(0, self.camera.getCameraWidht())
         self.ax.set_xlabel("PIXELS")
+        self.handleStaticData()
         # self.ax.set_xlim([0, self.camera.getCameraWidht()])
 
     def showWavelengthView(self):
         """ sets wavelengt view """
         if self.model:
             self.xLimValues = self.model(self.xLimValues)
-            self.ax.set_xlabel("WAVELENGTH")
+            self.ax.set_xlabel("NANOMETERS")
+            self.handleStaticData()
 
     def start(self):
         self.t = Thread(target=self.canvas.draw())
@@ -296,6 +296,7 @@ class Plot:
         else:
             self.showMaxLine = False
             self.maxLine.set_data([], [])
+            self.deletePeaks()
         self.handleStaticData()
 
     def selectMinMax(self):
@@ -328,3 +329,29 @@ class Plot:
 
     def packGraphCanvas(self):
         self.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+
+    def setShowPeaks(self):
+        if self.showPeaks:
+            self.showPeaks = False
+            self.deletePeaks()
+            self.handleStaticData()
+        else:
+            self.showPeaks = True
+            self.handleStaticData()
+
+    def setPeakDistance(self, distance):
+        self.peakDistance = distance
+
+    def setPeakHight(self, height):
+        self.peakHeight = height
+
+    def deletePeaks(self):
+        for a in self.annList:
+            a.remove()
+        self.annList[:] = []
+
+        if self.lines:
+            try:
+                self.lines.remove()
+            except ValueError:
+                pass

@@ -31,12 +31,12 @@ class FrameUtilMethods:
     def getGreenLine(self):
         """ :return avarged line of green values from frame"""
 
-        return self.avgLines(self.lineFrom, self.lineTo, 0)
+        return self.avgLines(self.lineFrom, self.lineTo, 1)
 
     def getBlueLine(self):
         """ :return avarged line of blue values from frame"""
 
-        return self.avgLines(self.lineFrom, self.lineTo, 1)
+        return self.avgLines(self.lineFrom, self.lineTo, 0)
 
     def getMaxLine(self):
         """ :return avarged line of max(GBR) values from frame"""

@@ -30,7 +30,7 @@ class GraphFunctionFrame(FrameBaseClass):
 
         # Buttons
         self.measurementsSetButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH, "Set")
-        self.measurementsSetButton.configure(command=lambda: self.getMin())
+        self.measurementsSetButton.configure(command=lambda: self.setMeasurements())
 
         self.referenceImageButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH, "Set")
         self.referenceImageButton.configure(command=lambda: self.getReferenceImage())
@@ -139,9 +139,6 @@ class GraphFunctionFrame(FrameBaseClass):
     def getReferenceImage(self):
         self.plot.setReferenceData()
 
-    def getMin(self):
-        return self.peakMinYEntry.get()
-
     def doSubtraction(self):
         self.plot.setSubstraction()
 
@@ -165,3 +162,21 @@ class GraphFunctionFrame(FrameBaseClass):
 
     def setShowMaxLine(self):
         self.plot.setShowMaxLine(self.maxVar.get())
+
+    def setShowPeaks(self):
+        self.plot.setShowPeaks()
+
+    def setPeakDistance(self):
+        peakDistance = self.peakMinYDifEntry.get()
+        if peakDistance != '':
+            self.plot.setPeakDistance(int(self.peakMinXDifEntry.get()))
+
+    def setPeakHeight(self):
+        peakHeight = self.peakMinYDifEntry.get()
+        if peakHeight != '':
+            self.plot.setPeakDistance(int(self.peakMinYDifEntry.get()))
+
+    def setMeasurements(self):
+        self.setPeakHeight()
+        self.setPeakDistance()
+        self.setShowPeaks()
