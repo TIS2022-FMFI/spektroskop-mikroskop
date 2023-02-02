@@ -1,3 +1,4 @@
+from threading import Thread
 from tkinter import *
 from tkinter import ttk
 import cv2
@@ -8,14 +9,15 @@ from gui_widgets.FrameBaseClass import FrameBaseClass
 
 # TODO LOGIKA PRI ZMENE CONNECTION OBRAZKA
 class CameraSettingsFrame(FrameBaseClass):
-    def __init__(self, plot=None, spectroImageFrame=None, liveCameraFrame=None, spectroCamera=None, liveCamera=None):
+    def __init__(self, plot=None, spectroCamera=None, liveCamera=None, liveCameraFrame=None):
         super().__init__()
 
+        self.t = None
+
         self.plot = plot
-        self.spectroImageFrame = spectroImageFrame
-        self.liveCameraFrame = liveCameraFrame
         self.spectroCamera = spectroCamera
         self.liveCamera = liveCamera
+        self.liveCameraFrame = liveCameraFrame
 
         # Setting color of frame
         self.configure(bg=self.FRAME_COLOR)
@@ -39,6 +41,9 @@ class CameraSettingsFrame(FrameBaseClass):
 
         self.setCameraCamerasButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH, "Set")
         self.setCameraCamerasButton.configure(command=lambda: self.setCameras())
+
+        self.setSpectroCameraButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH, "Set")
+        self.setSpectroCameraButton.configure(command=lambda: self.setSpectroCamera())
 
         self.setExposureTimeButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH, "Set")
         self.setExposureTimeButton.configure(command=lambda: self.getExposureTime())
@@ -83,11 +88,11 @@ class CameraSettingsFrame(FrameBaseClass):
 
         self.liveCameraLabel.grid(sticky=W, row=5, column=0, pady=(10, 0))
         self.liveCameraComboBox.grid(sticky=W, row=5, column=1, pady=(10, 0), padx=(10, 10))
+        self.setCameraCamerasButton.grid(sticky=E, row=6, column=0, pady=(10, 0))
 
-        self.spectroscopeCameraLabel.grid(sticky=W, row=6, column=0, pady=(10, 0))
-        self.spectroscopeCameraComboBox.grid(sticky=W, row=6, column=1, pady=(10, 0), padx=(10, 10))
-
-        self.setCameraCamerasButton.grid(sticky=E, row=7, column=0, pady=(10, 0))
+        self.spectroscopeCameraLabel.grid(sticky=W, row=7, column=0, pady=(10, 0))
+        self.spectroscopeCameraComboBox.grid(sticky=W, row=7, column=1, pady=(10, 0), padx=(10, 10))
+        self.setSpectroCameraButton.grid(sticky=E, row=8, column=0, pady=(10, 0))
 
         self.exposureTimeLabel.grid(sticky=W, row=9, column=0, pady=(10, 0))
         # self.exposureTimeEntry.grid(row=9, column=1, pady=(10, 0), padx=(0, 10))
@@ -140,33 +145,26 @@ class CameraSettingsFrame(FrameBaseClass):
         return cameras
 
     def setCameras(self):
-        idSpec = self.spectroscopeCameraVAR.get()
         idLive = self.liveCameraVAR.get()
-        if idSpec != "":
-            if self.spectroCamera is not None:
-                self.plot.release()
-                spectroCamera = Camera(int(idSpec), self.plot)
-                self.plot.camera = spectroCamera
-                spectroCamera.initCanvas(self.spectroImageFrame)
-                self.spectroCamera = spectroCamera
-                self.plot.show_plot()
-            else:
-                spectroCamera = Camera(int(idSpec), self.plot)
-                self.plot.camera = spectroCamera
-                spectroCamera.initCanvas(self.spectroImageFrame)
-                self.spectroCamera = spectroCamera
-                self.plot.show_plot()
 
         if idLive != "":
             if self.liveCamera is None:
-                self.liveCamera = Camera(int(idLive))
-                self.liveCameraFrame.initCamera(self.liveCamera)
-                self.liveCameraFrame.start()
-            else:
-                self.liveCamera.release()
-                self.liveCamera = Camera(int(idLive))
-                self.liveCameraFrame.release()
-                self.liveCameraFrame.initCamera(self.liveCamera)
-                self.liveCameraFrame.start()
+                raise RuntimeError("Live camera initioalization failed")
+            self.liveCamera.setCameraId(int(idLive))
+            self.liveCameraFrame.start()
+
+    def setSpectroCamera(self):
+        idSpec = self.spectroscopeCameraVAR.get()
+
+        if idSpec != "":
+            if self.spectroCamera is None:
+                raise RuntimeError("Spectro camera initioalisation failed")
+            self.spectroCamera.setCameraId(int(idSpec))
+            self.spectroCamera.start()
+            self.plot.show_plot()
+
+    def start(self):
+        self.t = Thread(target=self.plot.show_plot)
+        self.t.start()
 
 

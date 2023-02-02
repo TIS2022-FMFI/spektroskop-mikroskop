@@ -4,8 +4,7 @@ from gui_widgets.FrameBaseClass import FrameBaseClass
 
 
 class NavbarFrame(FrameBaseClass):
-    def __init__(self, cameraSettingsFrame, calibrationFrame, d32Frame, graphFunctionFrame, d3Frame, importExportFrame,
-                 cameraFeedTopLevel):
+    def __init__(self, cameraSettingsFrame, calibrationFrame, d32Frame, graphFunctionFrame, d3Frame, importExportFrame):
         super().__init__()
         # Setting color of frame Navbar frame
         self.configure(bg=self.NAVBAR_FRAME_COLOR)
@@ -20,7 +19,6 @@ class NavbarFrame(FrameBaseClass):
         self.graphFunctionFrame = graphFunctionFrame
         self.d3Frame = d3Frame
         self.importExportFrame = importExportFrame
-        self.cameraFeedTopLevel = cameraFeedTopLevel
 
         self.plot = None
 
@@ -96,11 +94,17 @@ class NavbarFrame(FrameBaseClass):
         self.placeNavBar1()
 
     def placeNavBar1(self):
+        self.resetColorButtons()
+        self.forgetFrames()
+        self.resetAllClickedButtons()
         self.removeWidgetsFromFrame()
         for index, widget in enumerate(self.navbar1Widgets):
             widget.grid(row=index, column=0, padx=(10, 10), pady=(10, 10))
 
     def placeNavBar2(self):
+        self.resetColorButtons()
+        self.forgetFrames()
+        self.resetAllClickedButtons()
         self.removeWidgetsFromFrame()
         for index, widget in enumerate(self.navbar2Widgets):
             widget.grid(row=index, column=0, padx=(10, 10), pady=(10, 10))
@@ -136,6 +140,10 @@ class NavbarFrame(FrameBaseClass):
         for frameID in self.isButtonClickedDict:
             if frameButtonID != frameID:
                 self.isButtonClickedDict[frameID] = False
+
+    def resetAllClickedButtons(self):
+        for frameID in self.isButtonClickedDict:
+            self.isButtonClickedDict[frameID] = False
 
     def resetColorButtons(self):
         for button in self.buttonDict.values():

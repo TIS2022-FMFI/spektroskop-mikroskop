@@ -30,16 +30,19 @@ class GraphFunctionFrame(FrameBaseClass):
 
         # Buttons
         self.measurementsSetButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH, "Set")
-        self.measurementsSetButton.configure(command=lambda: self.getMin())
+        self.measurementsSetButton.configure(command=lambda: self.setMeasurements())
+
+        self.showHidePeaksButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH, "Show")
+        self.showHidePeaksButton.configure(command=lambda: self.showHidePeaksButtonHandler())
 
         self.referenceImageButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH, "Set")
         self.referenceImageButton.configure(command=lambda: self.getReferenceImage())
 
         self.divideFromReferenceButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH, "Set")
-        self.divideFromReferenceButton.configure(command=lambda: self.doDivision())
+        self.divideFromReferenceButton.configure(command=lambda: self.divideFromReferenceButtonHandler())
 
         self.subtractFromReferenceButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH, "Set")
-        self.subtractFromReferenceButton.configure(command=lambda: self.doSubtraction())
+        self.subtractFromReferenceButton.configure(command=lambda: self.subtractFromReferenceButtonHandler())
 
         # Entries
         self.peakMinYEntry = self.initializeEntry(20)
@@ -84,10 +87,22 @@ class GraphFunctionFrame(FrameBaseClass):
                                       command=lambda: self.setShowGreenLine())
         self.blueVar = IntVar()
         self.checkBlue = Checkbutton(self, text="blue", bg=self.FRAME_COLOR, activebackground=self.FRAME_COLOR,
-                                     variable=self.blueVar, onvalue=1, offvalue=0, command=lambda: self.setShowBlueLine())
+                                     variable=self.blueVar, onvalue=1, offvalue=0,
+                                     command=lambda: self.setShowBlueLine())
         self.maxVar = IntVar(value=1)
         self.checkMax = Checkbutton(self, text="max", bg=self.FRAME_COLOR, activebackground=self.FRAME_COLOR,
                                     variable=self.maxVar, onvalue=1, offvalue=0, command=lambda: self.setShowMaxLine())
+
+        self.isButtonClickedDict = {
+            "showHidePeaksButton": False,
+            "divideFromReferenceButton": False,
+            "subtractFromReferenceButton": False
+        }
+        self.buttonDict = {
+            "showHidePeaksButton": self.showHidePeaksButton,
+            "divideFromReferenceButton": self.divideFromReferenceButton,
+            "subtractFromReferenceButton": self.subtractFromReferenceButton,
+        }
 
         # Placing widgets into frame
         self.placeWidgets()
@@ -104,7 +119,8 @@ class GraphFunctionFrame(FrameBaseClass):
         self.peakMinXDifLabel.grid(sticky=W, row=3, column=0, pady=(10, 0), columnspan=2)
         self.peakMinXDifEntry.grid(sticky=W, row=3, column=2, pady=(10, 0), padx=(10, 10))
 
-        self.measurementsSetButton.grid(sticky=W, row=4, column=1, pady=(10, 0), padx=(15, 10), columnspan=2)
+        self.measurementsSetButton.grid(sticky=W, row=4, column=1, pady=(10, 0), padx=(15, 10), columnspan=1)
+        self.showHidePeaksButton.grid(sticky=W, row=4, column=2, pady=(10, 0), padx=(15, 10), columnspan=1)
 
         self.globalPeakLabel.grid(sticky=W, row=5, column=0, pady=(10, 0), columnspan=2)
         self.globalPeakCheckbutton.grid(row=5, column=2, pady=(10, 0))
@@ -133,14 +149,41 @@ class GraphFunctionFrame(FrameBaseClass):
         self.checkBlue.grid(row=12, column=2)
         self.checkMax.grid(row=12, column=3)
 
+    def showHidePeaksButtonHandler(self):
+        if self.isButtonClickedDict["showHidePeaksButton"] == False:
+            #TODO: show peaks logic here
+            self.buttonDict["showHidePeaksButton"].configure(text = "Hide", bg= self.BUTTON_COLOR_CLICKED, fg="black")
+        else:
+            #TODO: hide peaks logic here
+            self.buttonDict["showHidePeaksButton"].configure(text = "Show", bg= self.BUTTON_COLOR, fg="white")
+        self.isButtonClickedDict["showHidePeaksButton"] = not self.isButtonClickedDict["showHidePeaksButton"]
+
+    def divideFromReferenceButtonHandler(self):
+        if self.isButtonClickedDict["divideFromReferenceButton"] == False:
+            #TODO: set logic here
+            # self.doDivision() ??
+            self.buttonDict["divideFromReferenceButton"].configure(text = "Unset", bg= self.BUTTON_COLOR_CLICKED, fg="black")
+        else:
+            #TODO: unset logic here
+            self.buttonDict["divideFromReferenceButton"].configure(text = "Set", bg= self.BUTTON_COLOR, fg="white")
+        self.isButtonClickedDict["divideFromReferenceButton"] = not self.isButtonClickedDict["divideFromReferenceButton"]
+
+    def subtractFromReferenceButtonHandler(self):
+        if self.isButtonClickedDict["subtractFromReferenceButton"] == False:
+            #TODO: set logic here
+            # self.doSubtraction() ??
+            self.buttonDict["subtractFromReferenceButton"].configure(text = "Unset", bg= self.BUTTON_COLOR_CLICKED, fg="black")
+        else:
+            #TODO: unset logic here
+            self.buttonDict["subtractFromReferenceButton"].configure(text = "Set", bg= self.BUTTON_COLOR, fg="white")
+        self.isButtonClickedDict["subtractFromReferenceButton"] = not self.isButtonClickedDict["subtractFromReferenceButton"]
+
+
     def initPlot(self, plot):
         self.plot = plot
 
     def getReferenceImage(self):
         self.plot.setReferenceData()
-
-    def getMin(self):
-        return self.peakMinYEntry.get()
 
     def doSubtraction(self):
         self.plot.setSubstraction()
@@ -165,3 +208,21 @@ class GraphFunctionFrame(FrameBaseClass):
 
     def setShowMaxLine(self):
         self.plot.setShowMaxLine(self.maxVar.get())
+
+    def setShowPeaks(self):
+        self.plot.setShowPeaks()
+
+    def setPeakDistance(self):
+        peakHeight = self.peakMinXDifEntry.get()
+        if peakHeight != '':
+            self.plot.setPeakDistance(int(peakHeight))
+
+    def setPeakHeight(self):
+        peakDistance = self.peakMinYDifEntry.get()
+        if peakDistance != '':
+            self.plot.setPeakHight(int(peakDistance))
+
+    def setMeasurements(self):
+        self.setPeakHeight()
+        self.setPeakDistance()
+        self.setShowPeaks()

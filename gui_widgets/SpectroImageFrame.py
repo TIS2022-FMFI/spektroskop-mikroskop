@@ -8,10 +8,7 @@ class SpectroImageFrame(FrameBaseClass):
         self.configure(bg="red", width=self.SPECTROMETER_FRAME_WIDTH, height=self.SPECTROMETER_FRAME_HEIGHT)
         # Setting that disables frame shrinkage to fit widgets
         self.propagate(False)
-        # self.camera = None
 
     def placeWidgets(self):
         pass
 
-    # def initCamera(self, camera):
-    #     self.camera = camera

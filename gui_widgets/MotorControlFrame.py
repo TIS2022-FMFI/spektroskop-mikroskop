@@ -6,10 +6,10 @@ from gui_widgets.MotorController import MotorController
 # TODO SCROLLBAR ABY UPDATEOVAL LABEL
 class MotorControlFrame(FrameBaseClass):
 
-    def __init__(self):
+    def __init__(self, plot=None):
         super().__init__()
-
-        self.motorController = MotorController()
+        self.plot = plot
+        self.motorController = MotorController(self.plot)
 
         # Initializing widgets
 
@@ -26,20 +26,20 @@ class MotorControlFrame(FrameBaseClass):
 
         # Buttons
         self.backToStartButton = self.initializeButton(30, 50, "|<")
-        self.backToStartButton.configure(command=lambda: self.motorController.moveX("l", self.motorController.X))
+
+        self.backToStartButton.configure(command=lambda: self.moveMotorLeft(self.motorController.X))
 
         self.stepBackButton = self.initializeButton(30, 50, "-")
-        self.stepBackButton.configure(command=lambda: self.motorController.moveX("l", 1))
+        self.stepBackButton.configure(command=lambda: self.moveMotorByOneLeft())
 
         self.stepForwardButton = self.initializeButton(30, 50, "+")
-        self.stepForwardButton.configure(command=lambda: self.motorController.moveX("r", 1))
+        self.stepForwardButton.configure(command=lambda: self.moveMotorByOneRight())
 
         self.forwardStepsButton = self.initializeButton(30, 50, ">|")
-        self.forwardStepsButton.configure(
-            command=lambda: self.motorController.moveX("r", int(self.scrollBarVal.get() * 100)))
+        self.forwardStepsButton.configure(command=lambda: self.moveMotorRight(int(self.scrollBarVal.get() * 100)))
 
         self.doStep = self.initializeButton(30, 50, "Start")
-        self.doStep.configure(command=lambda: self.motorController.moveX("r", int(self.stepEntry.get())))
+        self.doStep.configure(command=lambda: self.doScanning(int(self.stepEntry.get())))
 
         # Entry
         self.stepEntry = self.initializeEntry(15)
@@ -62,3 +62,20 @@ class MotorControlFrame(FrameBaseClass):
         self.forwardStepsButton.pack(side=LEFT, padx=(10, 10), pady=(10, 10))
         self.doStep.pack(side=LEFT, padx=(10, 10), pady=(10, 10))
         self.stepEntry.pack(side=LEFT, padx=(10, 10), pady=(10, 10))
+
+    def moveMotorByOneRight(self):
+        self.motorController.moveX("r", 1)
+
+    def moveMotorByOneLeft(self):
+        self.motorController.moveX("l", 1)
+
+    def moveMotorLeft(self, numberOfSteps):
+        self.motorController.moveX("l", numberOfSteps)
+
+    def moveMotorRight(self, numberOfSteps):
+        self.motorController.moveX("r", numberOfSteps)
+
+    def doScanning(self, numberOfSteps):
+        self.moveMotorRight(numberOfSteps)
+        self.motorController.releaseThread()
+        self.motorController.saveData()
