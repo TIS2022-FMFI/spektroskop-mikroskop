@@ -30,7 +30,7 @@ class MotorController:
 
     def _doMoveX(self,direction,numberOfSteps):
         # Setting relative mode (G90 absolute)
-        # self.ser.write(str.encode('G91\r\n'))
+        self.ser.write(str.encode('G91\r\n'))
 
         # Setting step "direction"
         if direction == "l":
@@ -48,7 +48,7 @@ class MotorController:
                 self.X -= 1
             else:
                 self.X += 1
-            # self.ser.write(str.encode('G0X' + stepUnit + 'F01\r\n'))
+            self.ser.write(str.encode('G0X' + stepUnit + 'F01\r\n'))
             time.sleep(2)
         # self.ser.close()
 

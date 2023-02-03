@@ -256,10 +256,18 @@ class Plot:
         self.doDivison = False
         self.handleStaticData()
 
+    def unsetSubtraction(self):
+        self.doSubtraction = False
+        self.handleStaticData()
+
     def setDivision(self):
         """ sets whether to do division over graph """
         self.doDivison = True
         self.doSubtraction = False
+        self.handleStaticData()
+
+    def unsetDivision(self):
+        self.doDivison = False
         self.handleStaticData()
 
     def setShowRedLine(self, value):
@@ -331,13 +339,13 @@ class Plot:
         self.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
 
     def setShowPeaks(self):
-        if self.showPeaks:
-            self.showPeaks = False
-            self.deletePeaks()
-            self.handleStaticData()
-        else:
-            self.showPeaks = True
-            self.handleStaticData()
+        self.showPeaks = True
+        self.handleStaticData()
+
+    def setHidePeaks(self):
+        self.showPeaks = False
+        self.deletePeaks()
+        self.handleStaticData()
 
     def setPeakDistance(self, distance):
         self.peakDistance = distance
