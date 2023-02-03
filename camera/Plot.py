@@ -108,7 +108,7 @@ class Plot:
                                             colors="purple", linestyles="dashed")
 
                 for x, y in zip(red_peaks_indices, maxValue[red_peaks_indices]):
-                    ann = self.ax.text(x - 2, y + 5, str(y))
+                    ann = self.ax.text(x - 2, y * 1.05, str(y))
                     self.annList.append(ann)
 
         self.selectMinMax()
