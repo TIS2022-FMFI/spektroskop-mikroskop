@@ -2,6 +2,7 @@ from tkinter import *
 from gui_widgets.FrameBaseClass import FrameBaseClass
 from gui_widgets.SpectralMap3d import Render3DGraph
 
+# # TODO LOGIKA PRI ZMENE CONNECTION OBRAZKA
 
 class D3Frame(FrameBaseClass):
     def __init__(self, motorFrame):
@@ -41,9 +42,10 @@ class D3Frame(FrameBaseClass):
         self.wavelengthEntry.grid(sticky=W, row=1, column=1, padx=(0, 10), pady=(10, 0))
         self.showButton.grid(row=2, column=1, padx=(0, 10), pady=(10, 0))
         self.scanLabel.grid(sticky=W, row=3, column=0, padx=(0, 10), pady=(10, 10))
-        self.scanImage.grid(row=3, column=0, padx=(40, 10), pady=(10, 10))
+        self.scanImage.grid(row=3, column=0, padx=(30, 10), pady=(10, 10))
 
     def show3Dgraph(self):
         dataFor3D = self.motorFrame.motorController.dataContainer
         render = Render3DGraph(dataFor3D)
-        render.renderHeightMap(int(self.wavelengthEntry.get()))
+        print("data of controller", dataFor3D)
+        render.renderHeightMap(550)
