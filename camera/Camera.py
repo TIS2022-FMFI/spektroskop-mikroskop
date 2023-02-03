@@ -105,10 +105,15 @@ class Camera:
             self.camera.release()
 
     def drawGuidengLines(self):
-        if self.drawTopLine:
-            self.myCanvas.create_line(0, self.drawTopLine, self.myCanvas.winfo_width(), self.drawTopLine, fill="white", width=1)
-        if self.drawBottomLine:
-            self.myCanvas.create_line(0, self.drawBottomLine, self.myCanvas.winfo_width(), self.drawBottomLine, fill="white", width=1)
+        if self.drawTopLine is None:
+            self.myCanvas.create_rectangle(0, 0, self.myCanvas.winfo_width(), self.drawBottomLine,
+                                           fill='#FFFFFF', outline='', stipple='gray12')
+        elif self.drawBottomLine is None:
+            self.myCanvas.create_rectangle(0, self.drawTopLine, self.myCanvas.winfo_width(), self.myCanvas.winfo_width(),
+                                           fill='#FFFFFF', outline='', stipple='gray12')
+        else:
+            self.myCanvas.create_rectangle(0, self.drawTopLine, self.myCanvas.winfo_width(), self.drawBottomLine,
+                                           fill='#FFFFFF', outline='', stipple='gray12')
 
     def setExposureTime(self, exposureTime):
         self.camera.set(cv2.CAP_PROP_EXPOSURE, int(exposureTime))
