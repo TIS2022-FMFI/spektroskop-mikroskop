@@ -94,11 +94,17 @@ class NavbarFrame(FrameBaseClass):
         self.placeNavBar1()
 
     def placeNavBar1(self):
+        self.resetColorButtons()
+        self.forgetFrames()
+        self.resetAllClickedButtons()
         self.removeWidgetsFromFrame()
         for index, widget in enumerate(self.navbar1Widgets):
             widget.grid(row=index, column=0, padx=(10, 10), pady=(10, 10))
 
     def placeNavBar2(self):
+        self.resetColorButtons()
+        self.forgetFrames()
+        self.resetAllClickedButtons()
         self.removeWidgetsFromFrame()
         for index, widget in enumerate(self.navbar2Widgets):
             widget.grid(row=index, column=0, padx=(10, 10), pady=(10, 10))
@@ -134,6 +140,10 @@ class NavbarFrame(FrameBaseClass):
         for frameID in self.isButtonClickedDict:
             if frameButtonID != frameID:
                 self.isButtonClickedDict[frameID] = False
+
+    def resetAllClickedButtons(self):
+        for frameID in self.isButtonClickedDict:
+            self.isButtonClickedDict[frameID] = False
 
     def resetColorButtons(self):
         for button in self.buttonDict.values():

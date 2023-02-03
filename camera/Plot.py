@@ -19,13 +19,13 @@ class Plot:
     def __init__(self, canvas, camera=Camera(0)):
         plt.style.use('ggplot')
         self.fig, self.ax = plt.subplots()
-        self.redLine, = self.ax.plot([], [], "red")
-        self.greenLine, = self.ax.plot([], [], "green")
-        self.blueLine, = self.ax.plot([], [], "blue")
-        self.maxLine, = self.ax.plot([], [], "black")
+        self.redLine, = self.ax.step([], [], "red")
+        self.greenLine, = self.ax.step([], [], "green")
+        self.blueLine, = self.ax.step([], [], "blue")
+        self.maxLine, = self.ax.step([], [], "black")
         self.ax.set_ylabel("INTENSITY")
         self.ax.set_xlabel("PIXELS")
-        plt.gca().xmargin = 0
+        self.fig.gca().xmargin = 0
         self.xLimValues = range(0, 1280)
         self.yMin = 255
         self.yMax = 0
@@ -108,7 +108,7 @@ class Plot:
                                             colors="purple", linestyles="dashed")
 
                 for x, y in zip(red_peaks_indices, maxValue[red_peaks_indices]):
-                    ann = self.ax.text(x - 2, y + 5, str(y))
+                    ann = self.ax.text(x - 2, y * 1.05, str(y))
                     self.annList.append(ann)
 
         self.selectMinMax()
@@ -256,10 +256,18 @@ class Plot:
         self.doDivison = False
         self.handleStaticData()
 
+    def unsetSubtraction(self):
+        self.doSubtraction = False
+        self.handleStaticData()
+
     def setDivision(self):
         """ sets whether to do division over graph """
         self.doDivison = True
         self.doSubtraction = False
+        self.handleStaticData()
+
+    def unsetDivision(self):
+        self.doDivison = False
         self.handleStaticData()
 
     def setShowRedLine(self, value):
@@ -331,13 +339,13 @@ class Plot:
         self.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
 
     def setShowPeaks(self):
-        if self.showPeaks:
-            self.showPeaks = False
-            self.deletePeaks()
-            self.handleStaticData()
-        else:
-            self.showPeaks = True
-            self.handleStaticData()
+        self.showPeaks = True
+        self.handleStaticData()
+
+    def setHidePeaks(self):
+        self.showPeaks = False
+        self.deletePeaks()
+        self.handleStaticData()
 
     def setPeakDistance(self, distance):
         self.peakDistance = distance
