@@ -159,6 +159,7 @@ class CameraSettingsFrame(FrameBaseClass):
         if idSpec != "":
             if self.spectroCamera is None:
                 raise RuntimeError("Spectro camera initioalisation failed")
+            self.plot.release()
             self.spectroCamera.setCameraId(int(idSpec))
             self.spectroCamera.start()
             self.plot.show_plot()

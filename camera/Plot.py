@@ -19,13 +19,13 @@ class Plot:
     def __init__(self, canvas, camera=Camera(0)):
         plt.style.use('ggplot')
         self.fig, self.ax = plt.subplots()
-        self.redLine, = self.ax.plot([], [], "red")
-        self.greenLine, = self.ax.plot([], [], "green")
-        self.blueLine, = self.ax.plot([], [], "blue")
-        self.maxLine, = self.ax.plot([], [], "black")
+        self.redLine, = self.ax.step([], [], "red")
+        self.greenLine, = self.ax.step([], [], "green")
+        self.blueLine, = self.ax.step([], [], "blue")
+        self.maxLine, = self.ax.step([], [], "black")
         self.ax.set_ylabel("INTENSITY")
         self.ax.set_xlabel("PIXELS")
-        plt.gca().xmargin = 0
+        self.fig.gca().xmargin = 0
         self.xLimValues = range(0, 1280)
         self.yMin = 255
         self.yMax = 0

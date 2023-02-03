@@ -80,4 +80,4 @@ class FrameUtilMethods:
             raise ValueError("Empty reference data")
 
     def getCollumn(self, collumn):
-        return self.frame[100:110, collumn, :]
+        return self.frame[:, collumn, :]

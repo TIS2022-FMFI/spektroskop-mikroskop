@@ -46,4 +46,4 @@ class D3Frame(FrameBaseClass):
     def show3Dgraph(self):
         dataFor3D = self.motorFrame.motorController.dataContainer
         render = Render3DGraph(dataFor3D)
-        render.renderHeightMap(self.wavelengthEntry.get(), dataFor3D)
+        render.renderHeightMap(int(self.wavelengthEntry.get()))

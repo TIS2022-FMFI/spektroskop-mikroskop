@@ -87,9 +87,13 @@ class Camera:
         self.camera = cv2.VideoCapture(self.cameraId)
         self.camera.set(cv2.CAP_PROP_FRAME_WIDTH, self.cameraWidth)
         self.isCapturing = True
+        print("iam capturing")
         if self.myCanvas is not None:
             self.myCanvas.destroy()
+            print("canvas destroyed")
         self.initCanvas()
+        print(self.rootCanvas)
+        # self.showImage(self.get_frame().__next__())
 
     def pause(self):
         self.lastFrame = self.get_frame().__next__()
