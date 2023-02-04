@@ -12,8 +12,6 @@ class CameraSettingsFrame(FrameBaseClass):
     def __init__(self, plot=None, spectroCamera=None, liveCamera=None, liveCameraFrame=None):
         super().__init__()
 
-        self.t = None
-
         self.plot = plot
         self.spectroCamera = spectroCamera
         self.liveCamera = liveCamera
@@ -34,38 +32,34 @@ class CameraSettingsFrame(FrameBaseClass):
         self.exposureTimeLabel = self.initializeLabel("Exposure time:", 0)
         self.connectionLabel = self.initializeLabel("Connection:", 0)
 
-
         # Buttons
-        self.setCameraLinesButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH, "Set")
-        self.setCameraLinesButton.configure(command=lambda: self.getLines())
-
-        self.setCameraCamerasButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH, "Set")
-        self.setCameraCamerasButton.configure(command=lambda: self.setCameras())
-
-        self.setSpectroCameraButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH, "Set")
-        self.setSpectroCameraButton.configure(command=lambda: self.setSpectroCamera())
-
         self.setExposureTimeButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH, "Set")
         self.setExposureTimeButton.configure(command=lambda: self.getExposureTime())
 
         # Entries
         self.lineEntry = self.initializeEntry(15)
+        self.lineEntry.insert(0, 100)
         self.extraLinesEntry = self.initializeEntry(15)
+        self.extraLinesEntry.insert(0, 0)
         self.averageEntry = self.initializeEntry(15)
         # self.exposureTimeEntry = self.initializeEntry(15)
 
         self.exposureTimeSlider = self.initializeScale(13)
 
+        self.lineEntry.bind("<KeyRelease>", self.setMainLine)
+        self.extraLinesEntry.bind("<KeyRelease>", self.setExtraLines)
 
         # Comboboxes
         self.liveCameraVAR = StringVar()
         self.liveCameraComboBox = ttk.Combobox(self, width=15, state='readonly', postcommand=self.fillLiveCameraIds,
                                                textvariable=self.liveCameraVAR)
+        self.liveCameraComboBox.set('1')
 
         self.spectroscopeCameraVAR = StringVar()
         self.spectroscopeCameraComboBox = ttk.Combobox(self, width=15, state='readonly',
-                                                       postcommand=self.fillSpectroscopeCameraIds, textvariable=self.spectroscopeCameraVAR)
-
+                                                       postcommand=self.fillSpectroscopeCameraIds,
+                                                       textvariable=self.spectroscopeCameraVAR)
+        self.spectroscopeCameraComboBox.set('0')
 
         # Images
         self.connectionSignalImage = Label(self, image=self.OFF_IMAGE, bg=self.FRAME_COLOR)
@@ -73,50 +67,54 @@ class CameraSettingsFrame(FrameBaseClass):
         self.placeWidgets()
 
     def placeWidgets(self):
-        self.cameraSettingsLabel.grid(sticky=W, row=0, column=0, pady=(10, 0))
+        row = 0
+        self.cameraSettingsLabel.grid(sticky=W, row=row, column=0, pady=(10, 0))
 
-        self.lineLabel.grid(sticky=W, row=1, column=0, pady=(10, 0))
-        self.lineEntry.grid(row=1, column=1, pady=(10, 0), padx=(0, 10))
+        row += 1
+        self.lineLabel.grid(sticky=W, row=row, column=0, pady=(10, 0))
+        self.lineEntry.grid(row=row, column=1, pady=(10, 0), padx=(0, 10))
 
-        self.extraLinesLabel.grid(sticky=W, row=2, column=0, pady=(10, 0))
-        self.extraLinesEntry.grid(row=2, column=1, pady=(10, 0), padx=(0, 10))
+        row += 1
+        self.extraLinesLabel.grid(sticky=W, row=row, column=0, pady=(10, 0))
+        self.extraLinesEntry.grid(row=row, column=1, pady=(10, 0), padx=(0, 10))
 
-        self.averageLabel.grid(sticky=W, row=3, column=0, pady=(10, 0))
-        self.averageEntry.grid(row=3, column=1, pady=(10, 0), padx=(0, 10))
+        row += 1
+        self.averageLabel.grid(sticky=W, row=row, column=0, pady=(10, 0))
+        self.averageEntry.grid(row=row, column=1, pady=(10, 0), padx=(0, 10))
 
-        self.setCameraLinesButton.grid(sticky=E, row=4, column=0, pady=(10, 0))
+        row += 1
+        self.liveCameraLabel.grid(sticky=W, row=row, column=0, pady=(10, 0))
+        self.liveCameraComboBox.grid(sticky=W, row=row, column=1, pady=(10, 0), padx=(10, 10))
 
-        self.liveCameraLabel.grid(sticky=W, row=5, column=0, pady=(10, 0))
-        self.liveCameraComboBox.grid(sticky=W, row=5, column=1, pady=(10, 0), padx=(10, 10))
-        self.setCameraCamerasButton.grid(sticky=E, row=6, column=0, pady=(10, 0))
+        row += 1
+        self.spectroscopeCameraLabel.grid(sticky=W, row=row, column=0, pady=(10, 0))
+        self.spectroscopeCameraComboBox.grid(sticky=W, row=row, column=1, pady=(10, 0), padx=(10, 10))
 
-        self.spectroscopeCameraLabel.grid(sticky=W, row=7, column=0, pady=(10, 0))
-        self.spectroscopeCameraComboBox.grid(sticky=W, row=7, column=1, pady=(10, 0), padx=(10, 10))
-        self.setSpectroCameraButton.grid(sticky=E, row=8, column=0, pady=(10, 0))
-
-        self.exposureTimeLabel.grid(sticky=W, row=9, column=0, pady=(10, 0))
+        row += 1
+        self.exposureTimeLabel.grid(sticky=W, row=row, column=0, pady=(10, 0))
         # self.exposureTimeEntry.grid(row=9, column=1, pady=(10, 0), padx=(0, 10))
-        self.exposureTimeSlider.grid(row=10, columnspan=2, sticky=W+E, pady=(10, 10))
 
-        self.setExposureTimeButton.grid(sticky=E, row=11, column=0, pady=(10, 10))
-        self.connectionLabel.grid(sticky=W, row=12, column=0, pady=(10, 10))
-        self.connectionSignalImage.grid(row=12, column=0, pady=(10, 10), padx=(30, 0))
+        row += 1
+        self.exposureTimeSlider.grid(row=row, columnspan=2, sticky=W+E, pady=(10, 10))
 
-    def getMainLine(self):
+        row += 1
+        self.setExposureTimeButton.grid(sticky=E, row=row, column=0, pady=(10, 10))
+
+        row += 1
+        self.connectionLabel.grid(sticky=W, row=row, column=0, pady=(10, 10))
+        self.connectionSignalImage.grid(row=row, column=0, pady=(10, 10), padx=(30, 0))
+
+    def setMainLine(self, event):
         try:
-            self.plot.setMainLine(int(self.lineEntry.get()))
+            self.plot.setMainLine(int(event.widget.get()))
         except ValueError:
-            pass
+            self.plot.setMainLine(0)
 
-    def getExtraLines(self):
+    def setExtraLines(self, event):
         try:
-            self.plot.setExtraLines(int(self.extraLinesEntry.get()))
+            self.plot.setExtraLines(int(event.widget.get()))
         except ValueError:
             self.plot.setExtraLines(0)
-
-    def getLines(self):
-        self.getMainLine()
-        self.getExtraLines()
 
     def getExposureTime(self):
         self.plot.setExposureTimeForCamera(self.exposureTimeSlider.get())
@@ -125,12 +123,12 @@ class CameraSettingsFrame(FrameBaseClass):
         self.plot = plot
 
     def fillLiveCameraIds(self):
-        self.liveCameraComboBox.bind("<<ComboboxSelected>>",lambda e: self.focus())
         self.liveCameraComboBox['values'] = self.getCameraIDS()
+        self.liveCameraComboBox.bind("<<ComboboxSelected>>", self.setLiveCamera)
 
     def fillSpectroscopeCameraIds(self):
-        self.spectroscopeCameraComboBox.bind("<<ComboboxSelected>>", lambda e: self.focus())
         self.spectroscopeCameraComboBox['values'] = self.getCameraIDS()
+        self.spectroscopeCameraComboBox.bind("<<ComboboxSelected>>", self.setSpectroCamera)
 
     def getCameraIDS(self):
         cameras = []
@@ -144,7 +142,8 @@ class CameraSettingsFrame(FrameBaseClass):
                 break
         return cameras
 
-    def setCameras(self):
+    def setLiveCamera(self, *args):
+        self.focus()
         idLive = self.liveCameraVAR.get()
 
         if idLive != "":
@@ -153,7 +152,8 @@ class CameraSettingsFrame(FrameBaseClass):
             self.liveCamera.setCameraId(int(idLive))
             self.liveCameraFrame.start()
 
-    def setSpectroCamera(self):
+    def setSpectroCamera(self, *args):
+        self.focus()
         idSpec = self.spectroscopeCameraVAR.get()
 
         if idSpec != "":
@@ -163,9 +163,3 @@ class CameraSettingsFrame(FrameBaseClass):
             self.spectroCamera.setCameraId(int(idSpec))
             self.spectroCamera.start()
             self.plot.show_plot()
-
-    def start(self):
-        self.t = Thread(target=self.plot.show_plot)
-        self.t.start()
-
-

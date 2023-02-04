@@ -7,7 +7,7 @@ from tkinter import *
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.animation import FuncAnimation
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 import matplotlib.backends.backend_agg as agg
 from scipy.signal import find_peaks
 
@@ -25,22 +25,24 @@ class Plot:
         self.maxLine, = self.ax.step([], [], "black")
         self.ax.set_ylabel("INTENSITY")
         self.ax.set_xlabel("PIXELS")
-        self.fig.gca().xmargin = 0
+        # self.fig.gca().xmargin = 0
         self.xLimValues = range(0, 1280)
         self.yMin = 255
         self.yMax = 0
         self.annList = []
         self.lines = None
-        self.ax.xmargin = 0
+        # self.ax.xmargin = 0
+        self.ax.set_position([0.2, 0.1, 0.1, 0.8])
 
         self.fig.tight_layout()
-        self.ax.use_sticky_edges = True
+        # self.ax.use_sticky_edges = True
 
         self.camera = camera
         self.t = None
         self.t2 = None
         self.isPaused = False
         self.canvas = FigureCanvasTkAgg(self.fig, master=canvas)
+        self.toolbar = NavigationToolbar2Tk(self.canvas, canvas)
         self.ani = None
         self.cameraCanvas = None
         self.label = None
@@ -149,12 +151,19 @@ class Plot:
             self.ax.vlines(x=x, ymin=min(cary), ymax=y, colors='purple', linestyles='dashed')
             self.ax.annotate(str(y), (x, y * 1.025))
 
+    def wofi(self, frame):
+        self.t2 = Thread(target=self.camera.showImage, args=(frame, ))
+        self.t2.start()
+
     def show_plot(self):
         """ main fuction to call for graph displaying """
         # self.startT2(self.camera.get_frame().__next__())
         self.ani = FuncAnimation(self.fig, self.updatePlot, frames=self.camera.get_frame(), interval=1)
         self.start()
         # self.canvas.draw()
+        self.toolbar.update()
+        self.canvas._tkcanvas.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=1)
+
         self.packGraphCanvas()
 
     def showPixelView(self):
@@ -174,10 +183,6 @@ class Plot:
     def start(self):
         self.t = Thread(target=self.canvas.draw())
         self.t.start()
-
-    def startT2(self, frame):
-        self.t2 = Thread(target=self.updatePlot, args=(frame,))
-        self.t2.start()
 
     def pause(self):
         if self.ani is not None:
@@ -217,8 +222,9 @@ class Plot:
 
     def setMainLine(self, mainLine):
         """ sets the main(middle) line of frame where are data are taken from """
-        self.mainLine = mainLine
-        self.frameUtils.setMainLine(mainLine)
+        self.mainLine = min(mainLine, self.camera.getCameraHeight() - 1)
+        self.frameUtils.setMainLine(self.mainLine)
+        self.camera.setExtraLines(self.mainLine, self.camera.extraLines)
         self.handleStaticData()
 
     def setExtraLines(self, extraLines):

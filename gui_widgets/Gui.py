@@ -62,7 +62,7 @@ class GUI(Tk):
         self.navbarFrame.pack(side=LEFT, fill=Y)
 
         print(self.winfo_height())
-        self.spectroImageFrame.pack(pady=(30, 0), padx=(250, 20), anchor=tk.E, fill=BOTH)
+        self.spectroImageFrame.pack(pady=(30, 0), padx=(120, 20), anchor=tk.E, fill=BOTH)
         self.graphImageFrame.pack(pady=(20, 0), expand=True, fill=BOTH)
         self.motorControlsFrame.pack(side=BOTTOM)
 
