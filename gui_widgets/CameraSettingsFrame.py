@@ -12,8 +12,6 @@ class CameraSettingsFrame(FrameBaseClass):
     def __init__(self, plot=None, spectroCamera=None, liveCamera=None, liveCameraFrame=None):
         super().__init__()
 
-        self.t = None
-
         self.plot = plot
         self.spectroCamera = spectroCamera
         self.liveCamera = liveCamera
@@ -34,14 +32,7 @@ class CameraSettingsFrame(FrameBaseClass):
         self.exposureTimeLabel = self.initializeLabel("Exposure time:", 0)
         self.connectionLabel = self.initializeLabel("Connection:", 0)
 
-
         # Buttons
-        self.setCameraCamerasButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH, "Set")
-        self.setCameraCamerasButton.configure(command=lambda: self.setCameras())
-
-        self.setSpectroCameraButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH, "Set")
-        self.setSpectroCameraButton.configure(command=lambda: self.setSpectroCamera())
-
         self.setExposureTimeButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH, "Set")
         self.setExposureTimeButton.configure(command=lambda: self.getExposureTime())
 
@@ -62,11 +53,13 @@ class CameraSettingsFrame(FrameBaseClass):
         self.liveCameraVAR = StringVar()
         self.liveCameraComboBox = ttk.Combobox(self, width=15, state='readonly', postcommand=self.fillLiveCameraIds,
                                                textvariable=self.liveCameraVAR)
+        self.liveCameraComboBox.set('1')
 
         self.spectroscopeCameraVAR = StringVar()
         self.spectroscopeCameraComboBox = ttk.Combobox(self, width=15, state='readonly',
-                                                       postcommand=self.fillSpectroscopeCameraIds, textvariable=self.spectroscopeCameraVAR)
-
+                                                       postcommand=self.fillSpectroscopeCameraIds,
+                                                       textvariable=self.spectroscopeCameraVAR)
+        self.spectroscopeCameraComboBox.set('0')
 
         # Images
         self.connectionSignalImage = Label(self, image=self.OFF_IMAGE, bg=self.FRAME_COLOR)
@@ -94,14 +87,8 @@ class CameraSettingsFrame(FrameBaseClass):
         self.liveCameraComboBox.grid(sticky=W, row=row, column=1, pady=(10, 0), padx=(10, 10))
 
         row += 1
-        self.setCameraCamerasButton.grid(sticky=E, row=row, column=0, pady=(10, 0))
-
-        row += 1
         self.spectroscopeCameraLabel.grid(sticky=W, row=row, column=0, pady=(10, 0))
         self.spectroscopeCameraComboBox.grid(sticky=W, row=row, column=1, pady=(10, 0), padx=(10, 10))
-
-        row += 1
-        self.setSpectroCameraButton.grid(sticky=E, row=row, column=0, pady=(10, 0))
 
         row += 1
         self.exposureTimeLabel.grid(sticky=W, row=row, column=0, pady=(10, 0))
@@ -121,7 +108,7 @@ class CameraSettingsFrame(FrameBaseClass):
         try:
             self.plot.setMainLine(int(event.widget.get()))
         except ValueError:
-            pass
+            self.plot.setMainLine(0)
 
     def setExtraLines(self, event):
         try:
@@ -136,12 +123,12 @@ class CameraSettingsFrame(FrameBaseClass):
         self.plot = plot
 
     def fillLiveCameraIds(self):
-        self.liveCameraComboBox.bind("<<ComboboxSelected>>",lambda e: self.focus())
         self.liveCameraComboBox['values'] = self.getCameraIDS()
+        self.liveCameraComboBox.bind("<<ComboboxSelected>>", self.setLiveCamera)
 
     def fillSpectroscopeCameraIds(self):
-        self.spectroscopeCameraComboBox.bind("<<ComboboxSelected>>", lambda e: self.focus())
         self.spectroscopeCameraComboBox['values'] = self.getCameraIDS()
+        self.spectroscopeCameraComboBox.bind("<<ComboboxSelected>>", self.setSpectroCamera)
 
     def getCameraIDS(self):
         cameras = []
@@ -155,7 +142,8 @@ class CameraSettingsFrame(FrameBaseClass):
                 break
         return cameras
 
-    def setCameras(self):
+    def setLiveCamera(self, *args):
+        self.focus()
         idLive = self.liveCameraVAR.get()
 
         if idLive != "":
@@ -164,7 +152,8 @@ class CameraSettingsFrame(FrameBaseClass):
             self.liveCamera.setCameraId(int(idLive))
             self.liveCameraFrame.start()
 
-    def setSpectroCamera(self):
+    def setSpectroCamera(self, *args):
+        self.focus()
         idSpec = self.spectroscopeCameraVAR.get()
 
         if idSpec != "":
@@ -174,9 +163,3 @@ class CameraSettingsFrame(FrameBaseClass):
             self.spectroCamera.setCameraId(int(idSpec))
             self.spectroCamera.start()
             self.plot.show_plot()
-
-    def start(self):
-        self.t = Thread(target=self.plot.show_plot)
-        self.t.start()
-
-

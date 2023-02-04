@@ -86,6 +86,7 @@ class Camera:
     def start(self):
         self.camera = cv2.VideoCapture(self.cameraId)
         self.camera.set(cv2.CAP_PROP_FRAME_WIDTH, self.cameraWidth)
+        self.camera.set(cv2.CAP_PROP_FRAME_HEIGHT, self.cameraHieght)
         self.isCapturing = True
         if self.myCanvas is not None:
             self.myCanvas.destroy()
@@ -102,7 +103,10 @@ class Camera:
             self.camera.release()
 
     def drawGuidengLines(self):
-        if self.drawTopLine is None:
+        if self.drawTopLine is None and self.drawBottomLine is None:
+            self.myCanvas.create_rectangle(0, 0, self.myCanvas.winfo_width(), self.cameraHieght - 1,
+                                           fill='#FFFFFF', outline='', stipple='gray12')
+        elif self.drawTopLine is None:
             self.myCanvas.create_rectangle(0, 0, self.myCanvas.winfo_width(), self.drawBottomLine,
                                            fill='#FFFFFF', outline='', stipple='gray12')
         elif self.drawBottomLine is None:
@@ -159,7 +163,7 @@ class Camera:
         if self.drawTopLine < 0:
             self.drawTopLine = None
 
-        if self.drawBottomLine > self.cameraHieght:
+        if self.drawBottomLine > self.cameraHieght - 1:
             self.drawBottomLine = None
 
     def initPlot(self, plot):
