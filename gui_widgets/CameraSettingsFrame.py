@@ -36,9 +36,6 @@ class CameraSettingsFrame(FrameBaseClass):
 
 
         # Buttons
-        self.setCameraLinesButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH, "Set")
-        self.setCameraLinesButton.configure(command=lambda: self.getLines())
-
         self.setCameraCamerasButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH, "Set")
         self.setCameraCamerasButton.configure(command=lambda: self.setCameras())
 
@@ -56,6 +53,8 @@ class CameraSettingsFrame(FrameBaseClass):
 
         self.exposureTimeSlider = self.initializeScale(13)
 
+        self.lineEntry.bind("<KeyRelease>", self.setMainLine)
+        self.extraLinesEntry.bind("<KeyRelease>", self.setExtraLines)
 
         # Comboboxes
         self.liveCameraVAR = StringVar()
@@ -73,50 +72,60 @@ class CameraSettingsFrame(FrameBaseClass):
         self.placeWidgets()
 
     def placeWidgets(self):
-        self.cameraSettingsLabel.grid(sticky=W, row=0, column=0, pady=(10, 0))
+        row = 0
+        self.cameraSettingsLabel.grid(sticky=W, row=row, column=0, pady=(10, 0))
 
-        self.lineLabel.grid(sticky=W, row=1, column=0, pady=(10, 0))
-        self.lineEntry.grid(row=1, column=1, pady=(10, 0), padx=(0, 10))
+        row += 1
+        self.lineLabel.grid(sticky=W, row=row, column=0, pady=(10, 0))
+        self.lineEntry.grid(row=row, column=1, pady=(10, 0), padx=(0, 10))
 
-        self.extraLinesLabel.grid(sticky=W, row=2, column=0, pady=(10, 0))
-        self.extraLinesEntry.grid(row=2, column=1, pady=(10, 0), padx=(0, 10))
+        row += 1
+        self.extraLinesLabel.grid(sticky=W, row=row, column=0, pady=(10, 0))
+        self.extraLinesEntry.grid(row=row, column=1, pady=(10, 0), padx=(0, 10))
 
-        self.averageLabel.grid(sticky=W, row=3, column=0, pady=(10, 0))
-        self.averageEntry.grid(row=3, column=1, pady=(10, 0), padx=(0, 10))
+        row += 1
+        self.averageLabel.grid(sticky=W, row=row, column=0, pady=(10, 0))
+        self.averageEntry.grid(row=row, column=1, pady=(10, 0), padx=(0, 10))
 
-        self.setCameraLinesButton.grid(sticky=E, row=4, column=0, pady=(10, 0))
+        row += 1
+        self.liveCameraLabel.grid(sticky=W, row=row, column=0, pady=(10, 0))
+        self.liveCameraComboBox.grid(sticky=W, row=row, column=1, pady=(10, 0), padx=(10, 10))
 
-        self.liveCameraLabel.grid(sticky=W, row=5, column=0, pady=(10, 0))
-        self.liveCameraComboBox.grid(sticky=W, row=5, column=1, pady=(10, 0), padx=(10, 10))
-        self.setCameraCamerasButton.grid(sticky=E, row=6, column=0, pady=(10, 0))
+        row += 1
+        self.setCameraCamerasButton.grid(sticky=E, row=row, column=0, pady=(10, 0))
 
-        self.spectroscopeCameraLabel.grid(sticky=W, row=7, column=0, pady=(10, 0))
-        self.spectroscopeCameraComboBox.grid(sticky=W, row=7, column=1, pady=(10, 0), padx=(10, 10))
-        self.setSpectroCameraButton.grid(sticky=E, row=8, column=0, pady=(10, 0))
+        row += 1
+        self.spectroscopeCameraLabel.grid(sticky=W, row=row, column=0, pady=(10, 0))
+        self.spectroscopeCameraComboBox.grid(sticky=W, row=row, column=1, pady=(10, 0), padx=(10, 10))
 
-        self.exposureTimeLabel.grid(sticky=W, row=9, column=0, pady=(10, 0))
+        row += 1
+        self.setSpectroCameraButton.grid(sticky=E, row=row, column=0, pady=(10, 0))
+
+        row += 1
+        self.exposureTimeLabel.grid(sticky=W, row=row, column=0, pady=(10, 0))
         # self.exposureTimeEntry.grid(row=9, column=1, pady=(10, 0), padx=(0, 10))
-        self.exposureTimeSlider.grid(row=10, columnspan=2, sticky=W+E, pady=(10, 10))
 
-        self.setExposureTimeButton.grid(sticky=E, row=11, column=0, pady=(10, 10))
-        self.connectionLabel.grid(sticky=W, row=12, column=0, pady=(10, 10))
-        self.connectionSignalImage.grid(row=12, column=0, pady=(10, 10), padx=(30, 0))
+        row += 1
+        self.exposureTimeSlider.grid(row=row, columnspan=2, sticky=W+E, pady=(10, 10))
 
-    def getMainLine(self):
+        row += 1
+        self.setExposureTimeButton.grid(sticky=E, row=row, column=0, pady=(10, 10))
+
+        row += 1
+        self.connectionLabel.grid(sticky=W, row=row, column=0, pady=(10, 10))
+        self.connectionSignalImage.grid(row=row, column=0, pady=(10, 10), padx=(30, 0))
+
+    def setMainLine(self, event):
         try:
-            self.plot.setMainLine(int(self.lineEntry.get()))
+            self.plot.setMainLine(int(event.widget.get()))
         except ValueError:
             pass
 
-    def getExtraLines(self):
+    def setExtraLines(self, event):
         try:
-            self.plot.setExtraLines(int(self.extraLinesEntry.get()))
+            self.plot.setExtraLines(int(event.widget.get()))
         except ValueError:
             self.plot.setExtraLines(0)
-
-    def getLines(self):
-        self.getMainLine()
-        self.getExtraLines()
 
     def getExposureTime(self):
         self.plot.setExposureTimeForCamera(self.exposureTimeSlider.get())

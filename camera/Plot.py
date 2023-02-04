@@ -224,6 +224,7 @@ class Plot:
         """ sets the main(middle) line of frame where are data are taken from """
         self.mainLine = mainLine
         self.frameUtils.setMainLine(mainLine)
+        self.camera.setExtraLines(self.mainLine, self.camera.extraLines)
         self.handleStaticData()
 
     def setExtraLines(self, extraLines):
