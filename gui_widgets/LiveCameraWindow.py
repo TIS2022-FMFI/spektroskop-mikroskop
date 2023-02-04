@@ -20,14 +20,12 @@ class LiveCameraWindow(Frame):
         self.t = None
 
     def show_frame(self):
-        print('showframe')
         imgtk = ImageTk.PhotoImage(image=self.img)
         self.lmain.imgtk = imgtk
         self.lmain.configure(image=imgtk)
 
     def update_frame(self):
         # Capture frame-by-frame
-        print("updateframe")
         ret = True
         frame = self.camera.get_frame().__next__()
         # Convert the frame to a format suitable for Tkinter
@@ -36,7 +34,7 @@ class LiveCameraWindow(Frame):
             self.img = Image.fromarray(frame)
             self.show_frame()
             # time.sleep(0.1)
-            self.lmain.after(500, self.update_frame)
+            self.lmain.after(100, self.update_frame)
 
     def initCamera(self, camera):
         self.camera = camera
