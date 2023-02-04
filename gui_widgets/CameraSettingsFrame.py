@@ -47,7 +47,9 @@ class CameraSettingsFrame(FrameBaseClass):
 
         # Entries
         self.lineEntry = self.initializeEntry(15)
+        self.lineEntry.insert(0, 100)
         self.extraLinesEntry = self.initializeEntry(15)
+        self.extraLinesEntry.insert(0, 0)
         self.averageEntry = self.initializeEntry(15)
         # self.exposureTimeEntry = self.initializeEntry(15)
 

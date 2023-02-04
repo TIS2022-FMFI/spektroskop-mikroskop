@@ -23,8 +23,8 @@ class Camera:
         self.pathToImage = None
 
         self.extraLines = 0
-        self.drawTopLine = self.cameraHieght // 2 - 1
-        self.drawBottomLine = self.cameraHieght // 2 + 1
+        self.drawTopLine = 100 - 1
+        self.drawBottomLine = 100 + 1
 
         self.plot = plot
 
