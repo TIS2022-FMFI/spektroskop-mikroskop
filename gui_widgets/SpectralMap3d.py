@@ -118,6 +118,3 @@ class Render3DGraph:
         buttonSave.place(x=880, y=40)
         self.render2D()
         master.mainloop()
-
-
-
