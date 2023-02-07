@@ -34,7 +34,7 @@ class D3Frame(FrameBaseClass):
         self.wavelengthValue = self.wavelengthEntry.get()
 
         #Tooltips
-        self.wavelengthLabelTooltipMSG = "PX"
+        self.wavelengthLabelTooltipMSG = "Image collum for image sequence analysis."
         self.calibrationChartTooltip = Hovertip(self.wavelengthLabel,
                                                        self.wavelengthLabelTooltipMSG)
 

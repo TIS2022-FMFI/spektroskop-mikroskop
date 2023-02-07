@@ -51,25 +51,25 @@ class ImportExportFrame(FrameBaseClass):
         self.calibrationChartButton.configure(command=lambda: self.FUNCTION_TODO("ARGUMENT"))
 
         # Tooltips
-        self.importSpectrailImageTooltipMSG = "ADD TEXT"
+        self.importSpectrailImageTooltipMSG = "Import image from file system."
         self.importSpectrailImageTooltip = Hovertip(self.importCameraSpectralImageLabel,
                                                     self.importSpectrailImageTooltipMSG)
 
-        self.importMeasurementSeriesTooltipMSG = "MEASSURMENT SERIES"
+        self.importMeasurementSeriesTooltipMSG = "Import series of images from file system."
         self.importMeasurementSeriesTooltip = Hovertip(self.importMeasurementSeriesLabel,
                                                        self.importMeasurementSeriesTooltipMSG)
 
-        self.graphImageTooltipMSG = "GRAHP IMAGE"
+        self.graphImageTooltipMSG = "Export graph image."
         self.graphImageTooltip = Hovertip(self.graphImageLabel, self.graphImageTooltipMSG)
 
-        self.exportCameraSpectralImageToolTipMSG = "CAMERA SPECTRAL IMAGE"
+        self.exportCameraSpectralImageToolTipMSG = "Export image from spectrometer camera."
         self.exportCameraSpectralImageToolTip = Hovertip(self.exportCameraSpectralImageLabel,
                                                          self.exportCameraSpectralImageToolTipMSG)
 
-        self.cameraImageTooltipMSG = "EXPORT CAMERA IMAGE "
+        self.cameraImageTooltipMSG = "Export image from live camera."
         self.cameraImageTooltip = Hovertip(self.cameraImageLabel, self.cameraImageTooltipMSG)
 
-        self.calibrationChartTooltipMSG = "CALIBRATION CHART"
+        self.calibrationChartTooltipMSG = "Export calibration chart."
         self.calibrationChartTooltip = Hovertip(self.calibrationChartLabel,
                                                 self.calibrationChartTooltipMSG)
 

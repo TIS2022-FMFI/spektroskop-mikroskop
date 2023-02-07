@@ -68,19 +68,19 @@ class CameraSettingsFrame(FrameBaseClass):
 
 
         #Tooltips
-        self.lineTooltipMSG = "line"
+        self.lineTooltipMSG = "Set middle line in analysed image."
         self.lineTooltip = Hovertip(self.lineLabel, self.lineTooltipMSG)
 
-        self.extraLinesTooltipMSG = "extra line"
+        self.extraLinesTooltipMSG = "Set number of lines above and under middle line."
         self.extraLinesTooltip = Hovertip(self.extraLinesLabel, self.extraLinesTooltipMSG)
 
         self.averageTooltipMSG = "avg"
         self.averageTooltip = Hovertip(self.averageLabel, self.averageTooltipMSG)
 
-        self.liveCameraTooltipMSG = "l camera"
+        self.liveCameraTooltipMSG = "Set camera for live sample image."
         self.liveCameraTooltip = Hovertip(self.liveCameraLabel, self.liveCameraTooltipMSG)
 
-        self.spectroscopeCameraTooltipMSG = "s camera"
+        self.spectroscopeCameraTooltipMSG = "Set camera for spectroscop camera image."
         self.spectroscopeCameraTooltip = Hovertip(self.spectroscopeCameraLabel, self.spectroscopeCameraTooltipMSG)
 
         self.exposureTimeTooltipMSG = "exposure time"

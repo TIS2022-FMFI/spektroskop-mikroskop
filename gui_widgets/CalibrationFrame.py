@@ -45,13 +45,13 @@ class CalibrationFrame(FrameBaseClass):
                                                          END)
 
         # Tooltips
-        self.calibrationFileTooltipMSG = "calibfile choose"
+        self.calibrationFileTooltipMSG = "Choose calibration file from folder system."
         self.calibrationFileTooltip = Hovertip(self.calibrationFileLabel, self.calibrationFileTooltipMSG)
 
-        self.createCalibrationFileTooltipMSG = " create calibfile"
+        self.createCalibrationFileTooltipMSG = "Create calibration from values written in text box."
         self.createCalibrationFileTooltip = Hovertip(self.createCalibrationFileLabel, self.createCalibrationFileTooltipMSG)
 
-        self.calibrationChartTooltipMSG = "calibfile choose"
+        self.calibrationChartTooltipMSG = "Show graph of calibration points"
         self.calibrationChartTooltip = Hovertip(self.calibrationChartLabel, self.calibrationChartTooltipMSG)
 
         self.placeWidgets()

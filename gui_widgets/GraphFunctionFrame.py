@@ -107,41 +107,36 @@ class GraphFunctionFrame(FrameBaseClass):
 
 
         #Tooltips
-        self.peakMinYTooltipMSG = "peakminy mssg"
+        self.peakMinYTooltipMSG = "..."
         self.peakMinYTooltip = Hovertip(self.peakMinYLabel, self.peakMinYTooltipMSG)
 
-        self.peakMinYDifTooltipMSG = "peakminY mssg"
+        self.peakMinYDifTooltipMSG = "Set min difference in y-axis for peak recognition."
         self.peakMinYDifTooltip = Hovertip(self.peakMinYDifLabel, self.peakMinYDifTooltipMSG)
 
-        self.peakMinXDifTooltipMSG = "peakminX mssg"
+        self.peakMinXDifTooltipMSG = "Set min difference in x-axis for peak recognition."
         self.peakMinXDifTooltip = Hovertip(self.peakMinXDifLabel, self.peakMinXDifTooltipMSG)
 
-        self.globalPeakTooltipMSG = "globalpeak mssg"
+        self.globalPeakTooltipMSG = "..."
         self.globalPeakTooltip = Hovertip(self.globalPeakLabel,self.globalPeakTooltipMSG)
 
-        self.referenceImageTooltipMSG = "reference image mssg"
+        self.referenceImageTooltipMSG = "Set actual image as reference image."
         self.referenceImageTooltip = Hovertip(self.referenceImageLabel, self.referenceImageTooltipMSG)
 
-        self.divideFromReferenceTooltipMSG = "divide from refference mssg"
+        self.divideFromReferenceTooltipMSG = "Set division of actual image from reference image."
         self.divideFromReferenceTooltip = Hovertip(self.divideFromReferenceLabel,
                                            self.divideFromReferenceTooltipMSG)
 
-        self.subtractFromReferenceTooltipMSG = "subtract from refference mssg"
+        self.subtractFromReferenceTooltipMSG = "Set subtraction of actual image form reference image."
         self.subtractFromReferenceTooltip = Hovertip(self.subtractFromReferenceLabel,
                                            self.subtractFromReferenceTooltipMSG)
 
-        self.subtractFromReferenceTooltipMSG = "subtract from refference mssg"
-        self.subtractFromReferenceTooltip = Hovertip(self.subtractFromReferenceLabel,
-                                           self.subtractFromReferenceTooltipMSG)
-
-        self.fromTooltipMSG = "subtract from refference mssg"
+        self.fromTooltipMSG = "..."
         self.fromTooltip = Hovertip(self.fromLabel,self.fromTooltipMSG)
 
-        self.toTooltipMSG = "subtract from refference mssg"
+        self.toTooltipMSG = "..."
         self.toTooltip = Hovertip(self.toLabel, self.toTooltipMSG)
 
-
-        self.scaleTooltipMSG = "subtract from refference mssg"
+        self.scaleTooltipMSG = "Sets x-axis view as px/nm."
         self.scaleTooltip = Hovertip(self.scaleLabel,self.scaleTooltipMSG)
 
         # Placing widgets into frame
