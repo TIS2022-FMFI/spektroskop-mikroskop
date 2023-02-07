@@ -89,17 +89,16 @@ class Render3DGraph:
             pom.append(self.frameUtil.getCollumn(self.chosenPX))
         return pom
 
-    def renderHeightMap(self, waveLength, newHeightMap=None):
+    def renderHeightMap(self, px, newHeightMap=None):
         """main window creation, checks whether the new map fill fit into given window size,
          if it is possible then handles rendering of graphs"""
         if newHeightMap is not None:
             self.heightMap = newHeightMap
         if self.heightMap is None:
-            pass
-            # raise Exception("nothing to render")
+            raise Exception("nothing to render")
         if len(self.heightMap) > 15:
             raise Exception("to much data to render")
-        self.chosenPX = waveLength
+        self.chosenPX = px
         self.paintMap = self.setRenderMap()
         master = tkinter.Tk()
         master.resizable(False, False)
@@ -110,7 +109,6 @@ class Render3DGraph:
         def changePxValue():
             """changes px for slider value"""
             self.chosenPX = slider.get()
-            print(self.chosenPX)
             self.paintMap = self.setRenderMap()
             if self.dimensions2D:
                 self.render2D()
