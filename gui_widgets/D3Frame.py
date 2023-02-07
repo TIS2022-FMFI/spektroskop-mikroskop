@@ -58,7 +58,10 @@ class D3Frame(FrameBaseClass):
         # self.scanLabel.grid(sticky=W, row=3, column=0, padx=(0, 10), pady=(10, 10))
         # self.scanImage.grid(row=3, column=0, padx=(30, 10), pady=(10, 10))
 
-    def show3Dgraph(self):
+        def show3Dgraph(self):
         dataFor3D = self.motorFrame.motorController.dataContainer
         render = Render3DGraph(dataFor3D)
-        render.renderHeightMap(int(self.wavelengthEntry.get()))
+        value = self.wavelengthEntry.get()
+        if not value.isnumeric():
+            value = 0
+        render.renderHeightMap(int(value))
