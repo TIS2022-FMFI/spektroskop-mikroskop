@@ -1,5 +1,6 @@
 from tkinter import *
 from gui_widgets.FrameBaseClass import FrameBaseClass
+from idlelib.tooltip import Hovertip
 
 
 # TODO FUNKCIONALITA CHECKUBUTTON/RADIOBUTTONS
@@ -16,14 +17,14 @@ class GraphFunctionFrame(FrameBaseClass):
         # Initializing widgets in frame
 
         # Labels
-        self.measurementsLabel = self.initializeLabel("Measurements", 1)
+        self.measurementsLabel = self.initializeLabel("Measurement", 1)
         self.peakMinYLabel = self.initializeLabel("Peak min y:", 0)
-        self.peakMinYDifLabel = self.initializeLabel("Peak min y difference:", 0)
-        self.peakMinXDifLabel = self.initializeLabel("Peak min x difference:", 0)
+        self.peakMinYDifLabel = self.initializeLabel("Peak min y\n difference:", 0)
+        self.peakMinXDifLabel = self.initializeLabel("Peak min x\n difference:", 0)
         self.globalPeakLabel = self.initializeLabel("Global peak:", 0)
         self.referenceImageLabel = self.initializeLabel("Reference image:", 0)
-        self.divideFromReferenceLabel = self.initializeLabel("Divide from reference image:", 0)
-        self.subtractFromReferenceLabel = self.initializeLabel("Subtract from reference image:", 0)
+        self.divideFromReferenceLabel = self.initializeLabel("Divide from\n reference image:", 0)
+        self.subtractFromReferenceLabel = self.initializeLabel("Subtract from\n reference image:", 0)
         self.fromLabel = self.initializeLabel("From:", 0)
         self.toLabel = self.initializeLabel("To:", 0)
         self.scaleLabel = self.initializeLabel("Scale", 0)
@@ -104,50 +105,125 @@ class GraphFunctionFrame(FrameBaseClass):
             "subtractFromReferenceButton": self.subtractFromReferenceButton,
         }
 
+
+        #Tooltips
+        self.peakMinYTooltipMSG = "..."
+        self.peakMinYTooltip = Hovertip(self.peakMinYLabel, self.peakMinYTooltipMSG)
+
+        self.peakMinYDifTooltipMSG = "Set min difference in y-axis for peak recognition."
+        self.peakMinYDifTooltip = Hovertip(self.peakMinYDifLabel, self.peakMinYDifTooltipMSG)
+
+        self.peakMinXDifTooltipMSG = "Set min difference in x-axis for peak recognition."
+        self.peakMinXDifTooltip = Hovertip(self.peakMinXDifLabel, self.peakMinXDifTooltipMSG)
+
+        self.globalPeakTooltipMSG = "..."
+        self.globalPeakTooltip = Hovertip(self.globalPeakLabel,self.globalPeakTooltipMSG)
+
+        self.referenceImageTooltipMSG = "Set actual image as reference image."
+        self.referenceImageTooltip = Hovertip(self.referenceImageLabel, self.referenceImageTooltipMSG)
+
+        self.divideFromReferenceTooltipMSG = "Set division of actual image from reference image."
+        self.divideFromReferenceTooltip = Hovertip(self.divideFromReferenceLabel,
+                                           self.divideFromReferenceTooltipMSG)
+
+        self.subtractFromReferenceTooltipMSG = "Set subtraction of actual image form reference image."
+        self.subtractFromReferenceTooltip = Hovertip(self.subtractFromReferenceLabel,
+                                           self.subtractFromReferenceTooltipMSG)
+
+        self.fromTooltipMSG = "..."
+        self.fromTooltip = Hovertip(self.fromLabel,self.fromTooltipMSG)
+
+        self.toTooltipMSG = "..."
+        self.toTooltip = Hovertip(self.toLabel, self.toTooltipMSG)
+
+        self.scaleTooltipMSG = "Sets x-axis view as px/nm."
+        self.scaleTooltip = Hovertip(self.scaleLabel,self.scaleTooltipMSG)
+
         # Placing widgets into frame
         self.placeWidgets()
 
     def placeWidgets(self):
-        self.measurementsLabel.grid(sticky=W, row=0, column=0, pady=(10, 0), columnspan=3)
+        self.measurementsLabel.pack()
 
-        self.peakMinYLabel.grid(sticky=W, row=1, column=0, pady=(10, 0), columnspan=2)
-        self.peakMinYEntry.grid(sticky=W, row=1, column=2, pady=(10, 0), padx=(10, 10))
+        self.peakMinYLabel.pack()
+        self.peakMinYEntry.pack()
 
-        self.peakMinYDifLabel.grid(sticky=W, row=2, column=0, pady=(10, 0), columnspan=2)
-        self.peakMinYDifEntry.grid(sticky=W, row=2, column=2, pady=(10, 0), padx=(10, 10))
+        self.peakMinYDifLabel.pack()
+        self.peakMinYDifEntry.pack()
 
-        self.peakMinXDifLabel.grid(sticky=W, row=3, column=0, pady=(10, 0), columnspan=2)
-        self.peakMinXDifEntry.grid(sticky=W, row=3, column=2, pady=(10, 0), padx=(10, 10))
+        self.peakMinXDifLabel.pack()
+        self.peakMinXDifEntry.pack()
 
-        self.measurementsSetButton.grid(sticky=W, row=4, column=1, pady=(10, 0), padx=(15, 10), columnspan=1)
-        self.showHidePeaksButton.grid(sticky=W, row=4, column=2, pady=(10, 0), padx=(15, 10), columnspan=1)
+        self.measurementsSetButton.pack(pady=(5,5))
+        self.showHidePeaksButton.pack(pady=(5,5))
 
-        self.globalPeakLabel.grid(sticky=W, row=5, column=0, pady=(10, 0), columnspan=2)
-        self.globalPeakCheckbutton.grid(row=5, column=2, pady=(10, 0))
+        self.globalPeakLabel.pack()
+        self.globalPeakCheckbutton.pack()
 
-        self.referenceImageLabel.grid(sticky=W, row=6, column=0, pady=(10, 0), columnspan=2)
-        self.referenceImageButton.grid(row=6, column=2, pady=(10, 0), padx=(10, 10))
+        self.referenceImageLabel.pack()
+        self.referenceImageButton.pack(pady=(5,5))
 
-        self.divideFromReferenceLabel.grid(sticky=W, row=7, column=0, pady=(10, 0), columnspan=2)
-        self.divideFromReferenceButton.grid(row=7, column=2, pady=(10, 0), padx=(10, 10))
+        self.divideFromReferenceLabel.pack()
+        self.divideFromReferenceButton.pack(pady=(5,5))
 
-        self.subtractFromReferenceLabel.grid(sticky=W, row=8, column=0, pady=(10, 0), columnspan=2)
-        self.subtractFromReferenceButton.grid(row=8, column=2, pady=(10, 0), padx=(10, 10))
+        self.subtractFromReferenceLabel.pack()
+        self.subtractFromReferenceButton.pack(pady=(5,5))
 
-        self.fromLabel.grid(sticky=W, row=9, column=0, pady=(10, 0), columnspan=2)
-        self.fromEntry.grid(sticky=W, row=9, column=2, pady=(10, 0), padx=(10, 10))
+        self.fromLabel.pack()
+        self.fromEntry.pack()
 
-        self.toLabel.grid(sticky=W, row=10, column=0, pady=(10, 0), columnspan=2)
-        self.toEntry.grid(sticky=W, row=10, column=2, pady=(10, 0), padx=(10, 10))
+        self.toLabel.pack()
+        self.toEntry.pack()
 
-        self.scaleLabel.grid(sticky=W, row=11, column=0, pady=(10, 10))
-        self.radioPx.grid(row=11, column=1, pady=(10, 0))
-        self.radioNm.grid(row=11, column=2, pady=(10, 0))
+        self.scaleLabel.pack()
+        self.radioPx.pack()
+        self.radioNm.pack(padx=(5,0))
 
-        self.checkRed.grid(row=12, column=0)
-        self.checkGreen.grid(row=12, column=1)
-        self.checkBlue.grid(row=12, column=2)
-        self.checkMax.grid(row=12, column=3)
+        self.checkRed.pack(padx=(2,0))
+        self.checkGreen.pack(padx=(14,0))
+        self.checkBlue.pack(padx=(6,0))
+        self.checkMax.pack(padx=(6,0))
+
+        # self.measurementsLabel.grid(sticky=W, row=0, column=0, pady=(10, 0), columnspan=3)
+        #
+        # self.peakMinYLabel.grid(sticky=W, row=1, column=0, pady=(10, 0), columnspan=2)
+        # self.peakMinYEntry.grid(sticky=W, row=1, column=2, pady=(10, 0), padx=(10, 10))
+        #
+        # self.peakMinYDifLabel.grid(sticky=W, row=2, column=0, pady=(10, 0), columnspan=2)
+        # self.peakMinYDifEntry.grid(sticky=W, row=2, column=2, pady=(10, 0), padx=(10, 10))
+        #
+        # self.peakMinXDifLabel.grid(sticky=W, row=3, column=0, pady=(10, 0), columnspan=2)
+        # self.peakMinXDifEntry.grid(sticky=W, row=3, column=2, pady=(10, 0), padx=(10, 10))
+        #
+        # self.measurementsSetButton.grid(sticky=W, row=4, column=1, pady=(10, 0), padx=(15, 10), columnspan=1)
+        # self.showHidePeaksButton.grid(sticky=W, row=4, column=2, pady=(10, 0), padx=(15, 10), columnspan=1)
+        #
+        # self.globalPeakLabel.grid(sticky=W, row=5, column=0, pady=(10, 0), columnspan=2)
+        # self.globalPeakCheckbutton.grid(row=5, column=2, pady=(10, 0))
+        #
+        # self.referenceImageLabel.grid(sticky=W, row=6, column=0, pady=(10, 0), columnspan=2)
+        # self.referenceImageButton.grid(row=6, column=2, pady=(10, 0), padx=(10, 10))
+        #
+        # self.divideFromReferenceLabel.grid(sticky=W, row=7, column=0, pady=(10, 0), columnspan=2)
+        # self.divideFromReferenceButton.grid(row=7, column=2, pady=(10, 0), padx=(10, 10))
+        #
+        # self.subtractFromReferenceLabel.grid(sticky=W, row=8, column=0, pady=(10, 0), columnspan=2)
+        # self.subtractFromReferenceButton.grid(row=8, column=2, pady=(10, 0), padx=(10, 10))
+        #
+        # self.fromLabel.grid(sticky=W, row=9, column=0, pady=(10, 0), columnspan=2)
+        # self.fromEntry.grid(sticky=W, row=9, column=2, pady=(10, 0), padx=(10, 10))
+        #
+        # self.toLabel.grid(sticky=W, row=10, column=0, pady=(10, 0), columnspan=2)
+        # self.toEntry.grid(sticky=W, row=10, column=2, pady=(10, 0), padx=(10, 10))
+        #
+        # self.scaleLabel.grid(sticky=W, row=11, column=0, pady=(10, 10))
+        # self.radioPx.grid(row=11, column=1, pady=(10, 0))
+        # self.radioNm.grid(row=11, column=2, pady=(10, 0))
+        #
+        # self.checkRed.grid(row=12, column=0)
+        # self.checkGreen.grid(row=12, column=1)
+        # self.checkBlue.grid(row=12, column=2)
+        # self.checkMax.grid(row=12, column=3)
 
     def showHidePeaksButtonHandler(self):
         if self.isButtonClickedDict["showHidePeaksButton"] == False:

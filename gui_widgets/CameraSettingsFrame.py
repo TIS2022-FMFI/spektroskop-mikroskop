@@ -2,6 +2,7 @@ from threading import Thread
 from tkinter import *
 from tkinter import ttk
 import cv2
+from idlelib.tooltip import Hovertip
 
 from camera.Camera import Camera
 from gui_widgets.FrameBaseClass import FrameBaseClass
@@ -23,12 +24,12 @@ class CameraSettingsFrame(FrameBaseClass):
         # Initializing widgets in frame
 
         # Labels
-        self.cameraSettingsLabel = self.initializeLabel("Camera settings", 1)
+        self.cameraSettingsLabel = self.initializeLabel("Camera\nsettings", 1)
         self.lineLabel = self.initializeLabel("Line:", 0)
         self.extraLinesLabel = self.initializeLabel("Extra lines:", 0)
         self.averageLabel = self.initializeLabel("Average:", 0)
         self.liveCameraLabel = self.initializeLabel("Live camera:", 0)
-        self.spectroscopeCameraLabel = self.initializeLabel("Spectroscope camera:", 0)
+        self.spectroscopeCameraLabel = self.initializeLabel("Spectroscope\n camera:", 0)
         self.exposureTimeLabel = self.initializeLabel("Exposure time:", 0)
         self.connectionLabel = self.initializeLabel("Connection:", 0)
 
@@ -64,45 +65,86 @@ class CameraSettingsFrame(FrameBaseClass):
         # Images
         self.connectionSignalImage = Label(self, image=self.OFF_IMAGE, bg=self.FRAME_COLOR)
 
+
+
+        #Tooltips
+        self.lineTooltipMSG = "Set middle line in analysed image."
+        self.lineTooltip = Hovertip(self.lineLabel, self.lineTooltipMSG)
+
+        self.extraLinesTooltipMSG = "Set number of lines above and under middle line."
+        self.extraLinesTooltip = Hovertip(self.extraLinesLabel, self.extraLinesTooltipMSG)
+
+        self.averageTooltipMSG = "avg"
+        self.averageTooltip = Hovertip(self.averageLabel, self.averageTooltipMSG)
+
+        self.liveCameraTooltipMSG = "Set camera for live sample image."
+        self.liveCameraTooltip = Hovertip(self.liveCameraLabel, self.liveCameraTooltipMSG)
+
+        self.spectroscopeCameraTooltipMSG = "Set camera for spectroscop camera image."
+        self.spectroscopeCameraTooltip = Hovertip(self.spectroscopeCameraLabel, self.spectroscopeCameraTooltipMSG)
+
+        self.exposureTimeTooltipMSG = "exposure time"
+        self.exposureTimeTooltip = Hovertip(self.exposureTimeLabel, self.exposureTimeTooltipMSG)
+
         self.placeWidgets()
 
     def placeWidgets(self):
-        row = 0
-        self.cameraSettingsLabel.grid(sticky=W, row=row, column=0, pady=(10, 0))
-
-        row += 1
-        self.lineLabel.grid(sticky=W, row=row, column=0, pady=(10, 0))
-        self.lineEntry.grid(row=row, column=1, pady=(10, 0), padx=(0, 10))
-
-        row += 1
-        self.extraLinesLabel.grid(sticky=W, row=row, column=0, pady=(10, 0))
-        self.extraLinesEntry.grid(row=row, column=1, pady=(10, 0), padx=(0, 10))
-
-        row += 1
-        self.averageLabel.grid(sticky=W, row=row, column=0, pady=(10, 0))
-        self.averageEntry.grid(row=row, column=1, pady=(10, 0), padx=(0, 10))
-
-        row += 1
-        self.liveCameraLabel.grid(sticky=W, row=row, column=0, pady=(10, 0))
-        self.liveCameraComboBox.grid(sticky=W, row=row, column=1, pady=(10, 0), padx=(10, 10))
-
-        row += 1
-        self.spectroscopeCameraLabel.grid(sticky=W, row=row, column=0, pady=(10, 0))
-        self.spectroscopeCameraComboBox.grid(sticky=W, row=row, column=1, pady=(10, 0), padx=(10, 10))
-
-        row += 1
-        self.exposureTimeLabel.grid(sticky=W, row=row, column=0, pady=(10, 0))
+        self.cameraSettingsLabel.pack()
+        self.lineLabel.pack()
+        self.lineEntry.pack()
+        self.extraLinesLabel.pack()
+        self.extraLinesEntry.pack()
+        self.averageLabel.pack()
+        self.averageEntry.pack()
+        self.liveCameraLabel.pack()
+        self.liveCameraComboBox.pack()
+        self.spectroscopeCameraLabel.pack()
+        self.spectroscopeCameraComboBox.pack()
+        self.exposureTimeLabel.pack()
         # self.exposureTimeEntry.grid(row=9, column=1, pady=(10, 0), padx=(0, 10))
+        self.exposureTimeSlider.pack()
+        self.setExposureTimeButton.pack(pady=(5,5))
+        self.connectionLabel.pack()
+        self.connectionSignalImage.pack()
 
-        row += 1
-        self.exposureTimeSlider.grid(row=row, columnspan=2, sticky=W+E, pady=(10, 10))
 
-        row += 1
-        self.setExposureTimeButton.grid(sticky=E, row=row, column=0, pady=(10, 10))
 
-        row += 1
-        self.connectionLabel.grid(sticky=W, row=row, column=0, pady=(10, 10))
-        self.connectionSignalImage.grid(row=row, column=0, pady=(10, 10), padx=(30, 0))
+        # row = 0
+        # self.cameraSettingsLabel.grid(sticky=W, row=row, column=0, pady=(10, 0))
+        #
+        # row += 1
+        # self.lineLabel.grid(sticky=W, row=row, column=0, pady=(10, 0))
+        # self.lineEntry.grid(row=row, column=1, pady=(10, 0), padx=(0, 10))
+        #
+        # row += 1
+        # self.extraLinesLabel.grid(sticky=W, row=row, column=0, pady=(10, 0))
+        # self.extraLinesEntry.grid(row=row, column=1, pady=(10, 0), padx=(0, 10))
+        #
+        # row += 1
+        # self.averageLabel.grid(sticky=W, row=row, column=0, pady=(10, 0))
+        # self.averageEntry.grid(row=row, column=1, pady=(10, 0), padx=(0, 10))
+        #
+        # row += 1
+        # self.liveCameraLabel.grid(sticky=W, row=row, column=0, pady=(10, 0))
+        # self.liveCameraComboBox.grid(sticky=W, row=row, column=1, pady=(10, 0), padx=(10, 10))
+        #
+        # row += 1
+        # self.spectroscopeCameraLabel.grid(sticky=W, row=row, column=0, pady=(10, 0))
+        # self.spectroscopeCameraComboBox.grid(sticky=W, row=row, column=1, pady=(10, 0), padx=(10, 10))
+        #
+        # row += 1
+        # self.exposureTimeLabel.grid(sticky=W, row=row, column=0, pady=(10, 0))
+        # # self.exposureTimeEntry.grid(row=9, column=1, pady=(10, 0), padx=(0, 10))
+        #
+        # row += 1
+        # self.exposureTimeSlider.grid(row=row, columnspan=2, sticky=W+E, pady=(10, 10))
+        #
+        # row += 1
+        # self.setExposureTimeButton.grid(sticky=E, row=row, column=0, pady=(10, 10))
+        #
+        # row += 1
+        # self.connectionLabel.grid(sticky=W, row=row, column=0, pady=(10, 10))
+        # self.connectionSignalImage.grid(row=row, column=0, pady=(10, 10), padx=(30, 0))
 
     def setMainLine(self, event):
         try:
