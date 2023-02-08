@@ -1,15 +1,11 @@
 import tkinter
-from tkinter import filedialog
-
-import cv2
 
 from camera.FrameUtilMethods import FrameUtilMethods
-
-from PIL import ImageGrab
 
 
 class Render3DGraph:
     def __init__(self, newHeightMap=None, width=1300, height=900, cellSize=1, margin=5):
+        self.chosenPX = None
         self.paintMap = None
         self.heightMap = newHeightMap
         self.width = width
@@ -18,6 +14,7 @@ class Render3DGraph:
         self.margin = margin
         self.canvas = None
         self.dimensions2D = True
+        self.frameUtil = FrameUtilMethods()
 
     def setCellSize(self, newCellSize):
         """sets cell size within the allowed limits"""
@@ -48,6 +45,8 @@ class Render3DGraph:
         y = self.margin + 260
         for j, line in enumerate(self.paintMap):
             x = 150 - j * (150 / len(self.paintMap))
+            self.canvas.create_text(x + 750, y - 3, text="+" + str((len(self.paintMap)-j-1)*0.01) + "mm", fill="black",
+                                    font='Helvetica 7 bold')
             for k, val in enumerate(line):
                 if k == 0:
                     self.block(x, y, max(val), self.getColor(val), s2=max(line[k + 1]))
@@ -57,7 +56,7 @@ class Render3DGraph:
                     self.block(x, y, max(val), self.getColor(val), s1=max(line[k - 1]), s2=max(line[k + 1]))
                 x += self.cellSize
             y += 150 / len(self.paintMap)
-        self.canvas.create_text(890, 320, text="F\nR\nA\nM\nE\nS", fill="black", font='Helvetica 15 bold')
+        self.canvas.create_text(930, 320, text="F\nR\nA\nM\nE\nS", fill="black", font='Helvetica 15 bold')
         self.canvas.create_text(400, 410, text="P I X E L S", fill="black", font='Helvetica 15 bold')  # ;) programur
 
     def block(self, x, y, size, color, s1=None, s2=None):
@@ -83,38 +82,45 @@ class Render3DGraph:
                 x += self.cellSize
             y += self.cellSize
 
-    def renderHeightMap(self, waveLength, newHeightMap=None):
+    def setRenderMap(self):
+        pom = []
+        for frame in reversed(self.heightMap):
+            self.frameUtil.setFrame(frame)
+            pom.append(self.frameUtil.getCollumn(self.chosenPX))
+        return pom
+
+    def renderHeightMap(self, px, newHeightMap=None):
         """main window creation, checks whether the new map fill fit into given window size,
          if it is possible then handles rendering of graphs"""
         if newHeightMap is not None:
             self.heightMap = newHeightMap
         if self.heightMap is None:
             raise Exception("nothing to render")
-        if len(self.heightMap) > 22:
+        if len(self.heightMap) > 15:
             raise Exception("to much data to render")
-        frameUtil = FrameUtilMethods()
-        pom = []
-        for frame in reversed(self.heightMap):
-            frameUtil.setFrame(frame)
-            pom.append(frameUtil.getCollumn(waveLength))
-        self.paintMap = pom
+        self.chosenPX = px
+        self.paintMap = self.setRenderMap()
         master = tkinter.Tk()
         master.resizable(False, False)
-        master.title(str(waveLength) + " nm")
+        master.title(str(self.chosenPX) + " nm")
         self.canvas = tkinter.Canvas(master, width=self.width, height=self.height)
         self.canvas.pack()
 
-        def saveGraph():
-            """saves graph image"""
-            file = filedialog.asksaveasfilename(filetypes=(('PNG File', '.PNG'), ('PNG File', '.png')))
-            if file is not None and file != '':
-                file += ".png"
-                ImageGrab.grab().crop((master.winfo_x() + 10, master.winfo_y() + 32, master.winfo_x() + self.width,
-                                       master.winfo_y() + self.height)).save(file)
+        def changePxValue():
+            """changes px for slider value"""
+            self.chosenPX = slider.get()
+            self.paintMap = self.setRenderMap()
+            if self.dimensions2D:
+                self.render2D()
+            else:
+                self.render3D()
 
+        slider = tkinter.Scale(master, from_=0, to=1280, orient=tkinter.HORIZONTAL, length=300, tickinterval=128)
+        slider.set(self.chosenPX)
+        slider.place(x=910, y=53)
+        buttonSetWL = tkinter.Button(master, text="Set", command=changePxValue)
+        buttonSetWL.place(x=880, y=70)
         button3D = tkinter.Button(master, text="3D/2D graph", command=self.switch3Dto2D)
-        button3D.place(x=880, y=10)
-        buttonSave = tkinter.Button(master, text="Save", command=saveGraph)
-        buttonSave.place(x=880, y=40)
+        button3D.place(x=880, y=30)
         self.render2D()
         master.mainloop()

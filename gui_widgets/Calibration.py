@@ -4,26 +4,32 @@ import matplotlib.pyplot as plt
 
 
 class Calibration:
-    def __init__(self, defaultPath=None):
-        self.model = None
+    def __init__(self, defaultPath="calibration_files/kalib.txt", plot=None):
+        self.filepath = defaultPath
         self.nm = []
         self.pixels = []
-        self.filepath = defaultPath
-        # self.calibrationChart = None
+        self.model = None
         self.plot = None
+        self.loadFile()
+        self.initPlot(plot)
+        self.calculateModel()
 
     def initPlot(self, plot):
+        """initializes plot for calib class to access"""
         self.plot = plot
 
     def __str__(self):
+        """returns string format, formatted to multiple lines"""
         return "".join([str(self.pixels[i]) + "    " + str(self.nm[i]) + '\n' for i in range(len(self.pixels))])
 
     def chooseFile(self):
+        """chooses calibration file"""
         self.filepath = askopenfilename(filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")])
         if self.filepath == "":
             self.filepath = None
 
     def saveFile(self):
+        """saves calibration file"""
         file = asksaveasfile(mode='w', defaultextension=".txt")
         if file is None:
             return
@@ -31,10 +37,12 @@ class Calibration:
         file.close()
 
     def pushArrays(self, file):
+        """"sets vvalues to arrays"""
         self.pixels = [float(line.split()[0]) for line in file]
         self.nm = [float(line.split()[1]) for line in file]
 
     def loadFile(self):
+        """reads file from given path"""
         if self.filepath is None:
             raise Exception("Please choose file")
         with open(self.filepath, mode='r') as file:
@@ -43,6 +51,7 @@ class Calibration:
             self.pushArrays(fileCopy)
 
     def loadFileFromApp(self, file):
+        """loads calibration chart from app"""
         self.pixels = []
         self.nm = []
         for line in file.split('\n'):
@@ -56,10 +65,12 @@ class Calibration:
         return True
 
     def calculateModel(self, polynomDegree=3):
+        """calculates calibration chart"""
         self.model = np.poly1d(np.polyfit(self.pixels, self.nm, polynomDegree))
         self.plot.initModel(self.model)
 
     def getModel(self):
+        """returns model"""
         return self.model
 
 
@@ -70,7 +81,8 @@ class CalibrationRender:
         self.offset = None
 
     def render(self, calibration):
-        fig = plt.figure("  Kalibračný súbor spektrometra ",
+        """renders calibration, based on data from calib.px, calib.nm, calib.model"""
+        fig = plt.figure("  Spectrometer calibration chart ",
                          figsize=(10, 6),
                          facecolor='xkcd:mint green',
                          edgecolor='r',
@@ -126,7 +138,8 @@ class CalibrationHandler:
 
     @staticmethod
     def calibrateFromFile(calibration, polynomeDegree=3):
-        """args=calibration object,  polynomial degree"""
+        """args=calibration object,  polynomial degree
+           handles calibration from file, chosen from OS system"""
         calibration.chooseFile()
         if calibration.filepath == "":
             return
@@ -135,5 +148,7 @@ class CalibrationHandler:
 
     @staticmethod
     def calibrateFromApp(calibration, file, polynomeDegree=3):
+        """handles calibration from app, values are given in text window"""
         if calibration.loadFileFromApp(file):
             calibration.calculateModel(polynomeDegree)
+            
