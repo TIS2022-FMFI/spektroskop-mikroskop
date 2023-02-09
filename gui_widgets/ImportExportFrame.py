@@ -83,7 +83,7 @@ class ImportExportFrame(FrameBaseClass):
         self.importSpectralImageButton.pack( pady=(5, 5))
 
         self.importMeasurementSeriesLabel.pack()
-        self.importMeasurementSeriesButton.pack( pady=(5, 5))
+        self.importMeasurementSeriesButton.pack(pady=(5, 5))
 
         self.exportLabel.pack()
 

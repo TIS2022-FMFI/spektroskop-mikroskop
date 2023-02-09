@@ -5,7 +5,6 @@ from camera.Camera import Camera
 from camera.Plot import Plot
 from gui_widgets.CalibrationFrame import CalibrationFrame
 from gui_widgets.CameraSettingsFrame import CameraSettingsFrame
-from gui_widgets.D32Frame import D32Frame
 from gui_widgets.D3Frame import D3Frame
 from gui_widgets.GraphFunctionFrame import GraphFunctionFrame
 from gui_widgets.GraphImageFrame import GraphImageFrame
@@ -51,12 +50,13 @@ class GUI(Tk):
         self.cameraSettingsFrame = CameraSettingsFrame(spectroCamera=self.spectroCamera, liveCamera=self.liveCamera,
                                                        liveCameraFrame=self.liveCameraWindow)
         self.calibrationFrame = CalibrationFrame(self.plot)
-        self.d32Frame = D32Frame()
         self.graphFunctionFrame = GraphFunctionFrame()
         self.d3Frame = D3Frame(self.motorControlsFrame)
         self.importExportFrame = ImportExportFrame(self.plot, self.motorControlsFrame)
 
-        self.navbarFrame = NavbarFrame(self.cameraSettingsFrame, self.calibrationFrame, self.d32Frame,
+        self.spectroCamera.initSettingFrame(self.cameraSettingsFrame)
+
+        self.navbarFrame = NavbarFrame(self.cameraSettingsFrame, self.calibrationFrame,
                                        self.graphFunctionFrame, self.d3Frame, self.importExportFrame)
         # Placing frame objects into the window
         self.navbarFrame.pack(side=LEFT, fill=Y)

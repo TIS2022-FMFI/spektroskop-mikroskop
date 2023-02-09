@@ -4,7 +4,8 @@ from gui_widgets.FrameBaseClass import FrameBaseClass
 
 
 class NavbarFrame(FrameBaseClass):
-    def __init__(self, cameraSettingsFrame, calibrationFrame, d32Frame, graphFunctionFrame, d3Frame, importExportFrame):
+    def __init__(self, cameraSettingsFrame, calibrationFrame,
+                 graphFunctionFrame, d3Frame, importExportFrame):
         super().__init__()
         # Setting color of frame Navbar frame
         self.configure(bg=self.NAVBAR_FRAME_COLOR)
@@ -15,7 +16,6 @@ class NavbarFrame(FrameBaseClass):
         # Popup menu frames
         self.cameraSettingsFrame = cameraSettingsFrame
         self.calibrationFrame = calibrationFrame
-        self.d32Frame = d32Frame
         self.graphFunctionFrame = graphFunctionFrame
         self.d3Frame = d3Frame
         self.importExportFrame = importExportFrame
@@ -54,14 +54,11 @@ class NavbarFrame(FrameBaseClass):
         self.calibrationButton = self.initializeButton(self.NAVBAR_BUTTON_SIZE, self.NAVBAR_BUTTON_SIZE, "Calibration")
         self.calibrationButton.configure(command=lambda: self.placeRemovePopupMenu("calibrationButton"))
 
-        self.d32Button = self.initializeButton(self.NAVBAR_BUTTON_SIZE, self.NAVBAR_BUTTON_SIZE, "3D")
-        self.d32Button.configure(command=lambda: self.placeRemovePopupMenu("d32Button"))
-
         # List of widgets for navbar page 1 and 2
         self.navbar1Widgets = [self.settingsButton, self.playButton, self.pauseButton, self.graphFunButton,
                                self.d3Button, self.importExportButton]
 
-        self.navbar2Widgets = [self.backButton, self.cameraButton, self.calibrationButton, self.d32Button]
+        self.navbar2Widgets = [self.backButton, self.cameraButton, self.calibrationButton]
 
         # Dictionaries used to map up buttons,frames and if they're active. Used for switching between popupmenus and
         # changing button colors
@@ -71,7 +68,6 @@ class NavbarFrame(FrameBaseClass):
             "importExportButton": self.importExportButton,
             "cameraButton": self.cameraButton,
             "calibrationButton": self.calibrationButton,
-            "d32Button": self.d32Button
         }
         self.isButtonClickedDict = {
             "graphFunButton": False,
@@ -79,7 +75,6 @@ class NavbarFrame(FrameBaseClass):
             "importExportButton": False,
             "cameraButton": False,
             "calibrationButton": False,
-            "d32Button": False
         }
         self.frameDict = {
             "graphFunButton": self.graphFunctionFrame,
@@ -87,7 +82,6 @@ class NavbarFrame(FrameBaseClass):
             "importExportButton": self.importExportFrame,
             "cameraButton": self.cameraSettingsFrame,
             "calibrationButton": self.calibrationFrame,
-            "d32Button": self.d32Frame
         }
 
         # Placing navbar1
