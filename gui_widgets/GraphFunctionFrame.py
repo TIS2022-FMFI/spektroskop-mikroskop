@@ -169,11 +169,11 @@ class GraphFunctionFrame(FrameBaseClass):
         self.subtractFromReferenceLabel.pack()
         self.subtractFromReferenceButton.pack(pady=(5,5))
 
-        self.fromLabel.pack()
-        self.fromEntry.pack()
-
-        self.toLabel.pack()
-        self.toEntry.pack()
+        # self.fromLabel.pack()
+        # self.fromEntry.pack()
+        #
+        # self.toLabel.pack()
+        # self.toEntry.pack()
 
         self.scaleLabel.pack()
         self.radioPx.pack()

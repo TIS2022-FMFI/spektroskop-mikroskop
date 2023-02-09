@@ -48,6 +48,7 @@ class FrameBaseClass(Frame):
     def initializeScale(self, w):
         return Scale(self, width=w, orient=HORIZONTAL, name="exposure time", from_=0, to=-13)
 
+
     def removeWidgetsFromFrame(self):
         for widgets in self.winfo_children():
             widgets.grid_forget()

@@ -14,7 +14,7 @@ class CameraSettingsFrame(FrameBaseClass):
         super().__init__()
 
         self.plot = plot
-        self.spectroCamera = spectroCamera
+        self.spectroCamera : Camera = spectroCamera
         self.liveCamera = liveCamera
         self.liveCameraFrame = liveCameraFrame
 
@@ -35,7 +35,7 @@ class CameraSettingsFrame(FrameBaseClass):
 
         # Buttons
         self.setExposureTimeButton = self.initializeButton(self.BUTTON_SIZE_HEIGHT, self.BUTTON_SIZE_WIDTH, "Set")
-        self.setExposureTimeButton.configure(command=lambda: self.getExposureTime())
+        self.setExposureTimeButton.configure(command=lambda: self.spectroCamera.setExposureTime(self.getExposureTime()))
 
         # Entries
         self.lineEntry = self.initializeEntry(15)
@@ -46,6 +46,8 @@ class CameraSettingsFrame(FrameBaseClass):
         # self.exposureTimeEntry = self.initializeEntry(15)
 
         self.exposureTimeSlider = self.initializeScale(13)
+        self.exposureTimeSlider.set(-4)
+        self.exposureTimeSlider.config(command=lambda value: self.getExposureTime())
 
         self.lineEntry.bind("<KeyRelease>", self.setMainLine)
         self.extraLinesEntry.bind("<KeyRelease>", self.setExtraLines)
@@ -94,8 +96,8 @@ class CameraSettingsFrame(FrameBaseClass):
         self.lineEntry.pack()
         self.extraLinesLabel.pack()
         self.extraLinesEntry.pack()
-        self.averageLabel.pack()
-        self.averageEntry.pack()
+        # self.averageLabel.pack()
+        # self.averageEntry.pack()
         self.liveCameraLabel.pack()
         self.liveCameraComboBox.pack()
         self.spectroscopeCameraLabel.pack()
@@ -103,9 +105,9 @@ class CameraSettingsFrame(FrameBaseClass):
         self.exposureTimeLabel.pack()
         # self.exposureTimeEntry.grid(row=9, column=1, pady=(10, 0), padx=(0, 10))
         self.exposureTimeSlider.pack()
-        self.setExposureTimeButton.pack(pady=(5,5))
-        self.connectionLabel.pack()
-        self.connectionSignalImage.pack()
+        self.setExposureTimeButton.pack(pady=(5, 5))
+        # self.connectionLabel.pack()
+        # self.connectionSignalImage.pack()
 
 
 
